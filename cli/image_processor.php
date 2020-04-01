@@ -24,15 +24,16 @@ if(!is_dir($image_save_path)) {
     mkdir($image_save_path, 0777, true);
 }
 
-echo number_format(microtime(true) - $start_time, 4) . " sec: " . print_r($result, true) . "\n";
-
 foreach ($result as $image_result) {
     $image = new Picture();
     $image->fromStdClass($image_result);
     $download_url = $image->tmp_url;
     echo number_format(microtime(true) - $start_time, 4) . " sec: Downloading image from " . $download_url. "\n";
     $downloader = new Download();
-    $filename = $downloader->download($download_url, $image_save_path, $image->file_name);
+    $query = [];
+    $url = parse_url($image->tmp_url);
+    parse_str($url['query'], $query);
+    $filename = $downloader->download($download_url, $image_save_path, $image->id_media_object . '_' . $query['id']);
     $image->path = $image_save_path;
     $image->uri = $config['imageprocessor']['image_file_path'];
     $image->file_name = $filename;
