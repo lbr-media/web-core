@@ -6,7 +6,7 @@
 
 * clone the repository
 * edit the configuration file config.json
-* Insert your database information under devlopment.database
+* Insert your database information under development.database
 ```json
 {
     "development": {
@@ -35,7 +35,7 @@
     }
 }
 ```
-* Insert the information for pressmind media object types under development.data.media_types (these informations are also provided by pressmind)
+* Insert the information for pressmind media object types under development.data.media_types (this information is also provided by pressmind)
 ```json
 {
     "development": {
