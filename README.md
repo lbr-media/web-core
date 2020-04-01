@@ -65,4 +65,4 @@ To do a fullimport (which is recommended after a fresh install add the argument 
 your-project-folder/cli$ php import.php fullimport
 ```
 Depending on the amount of data that is stored in pressmind, the fullimport can last while.
-For each media object all despriptive and touristical data will be imported into the database. Additionally all related files and images will be downloaded to the folder /assets.
+For each media object all descriptive and touristic data will be imported into the database. Additionally all related files and images will be downloaded to the folder /assets.
