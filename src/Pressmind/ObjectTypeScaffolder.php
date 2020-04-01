@@ -78,7 +78,7 @@ class ObjectTypeScaffolder
             }
 
         }
-        $sql = 'create table objectdata_' . HelperFunctions::human_to_machine($this->_tablename) . '(' . implode(',', $database_fields) . ', primary key (id), index (language, id_media_object))';
+        $sql = 'CREATE TABLE objectdata_' . HelperFunctions::human_to_machine($this->_tablename) . '(' . implode(',', $database_fields) . ', PRIMARY KEY (id), INDEX (language), UNIQUE (id_media_object))';
         $this->_generateORMFile($definition_fields);
         $this->_insertDatabaseTable($sql);
         $this->generateObjectInformationFile();
