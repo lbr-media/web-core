@@ -17,7 +17,7 @@ class Objectlink implements MapperInterface
                 $mapped_object->language = $pLanguage;
                 $mapped_object->var_name = $pVarName;
                 $mapped_object->id_media_object_link = $object;
-                $mapped_object->id_object_type = $pObject->id_object_type;
+                $mapped_object->id_object_type = isset($pObject->id_object_type) ? $pObject->id_object_type : 0;
                 $mapped_object->link_type = $pObject->objectLink == 1 ? 'objectlink' : 'image';
                 $result[] = $mapped_object;
             }
