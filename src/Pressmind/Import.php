@@ -111,7 +111,7 @@ class Import
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::import()', Writer::OUTPUT_FILE, 'import.log');
         $params = [
             'visibility' => implode(',', $this->_visibilities),
-            'state' => implode(',', $this->_states),
+            //'state' => implode(',', $this->_states),
             'id_media_object_type' => implode(',', $allowed_object_types)
         ];
         if (!is_null($id_pool)) {
