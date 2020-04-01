@@ -2,7 +2,7 @@
 
 ## v 0.0.1alpha
 
-##Quickstart
+## Quickstart
 
 * clone the repository
 * edit the configuration file config.json
