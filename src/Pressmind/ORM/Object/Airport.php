@@ -36,7 +36,7 @@ class Airport extends AbstractObject
                         'title' => 'Id',
                         'name' => 'id',
                         'type' => 'integer',
-                        'required' => false,
+                        'required' => true,
                         'validators' =>
                             array(
                                 0 =>

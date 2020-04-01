@@ -67,7 +67,7 @@ class CheapestPriceSpeed extends AbstractObject
                 'name' => 'id',
                 'title' => 'id',
                 'type' => 'integer',
-                'required' => false,
+                'required' => true,
                 'filters' => null,
                 'validators' => null
             ],
