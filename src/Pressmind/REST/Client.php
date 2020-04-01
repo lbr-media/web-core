@@ -63,11 +63,11 @@ class Client
     /**
      * @param string $controller
      * @param string $action
-     * @param array $params
+     * @param array|null $params
      * @return stdClass
      * @throws Exception
      */
-    public function sendRequest($controller, $action, $params) {
+    public function sendRequest($controller, $action, $params = null) {
         Writer::write('CURL initialized', Writer::OUTPUT_FILE, 'restclient.log');
         $ch = curl_init();
         $get_params = (is_array($params) && count($params) > 0) ? '?' . http_build_query($params) : '';
