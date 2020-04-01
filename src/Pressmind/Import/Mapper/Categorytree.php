@@ -10,7 +10,7 @@ class Categorytree implements MapperInterface
     {
         $result = [];
         $keys = [];
-        if(isset($pObject->items) && is_array($pObject->items)) {
+        if(isset($pObject->items) && is_object($pObject->items)) {
             foreach ($pObject->items as $key => $items) {
                 foreach ($items as $sub_item) {
                     foreach ($sub_item as $item) {
