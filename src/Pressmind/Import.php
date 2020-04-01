@@ -464,8 +464,9 @@ class Import
         foreach ($media_object_data->data as $datafield) {
             if (is_array($datafield->sections)) {
                 foreach ($datafield->sections as $section) {
-                    if(!in_array($datafield->var_name, $ignore)) {
-                        $column_name = $datafield->var_name . '_' . HelperFunctions::human_to_machine($section->name);
+                    $var_name = HelperFunctions::human_to_machine($datafield->var_name);
+                    if(!in_array($var_name, $ignore)) {
+                        $column_name = $var_name . '_' . HelperFunctions::human_to_machine($section->name);
                         $language = empty($section->language) ? $default_language : $section->language;
                         if (!isset($values[$language])) $values[$language] = [];
                         $section_id = $section->id;
