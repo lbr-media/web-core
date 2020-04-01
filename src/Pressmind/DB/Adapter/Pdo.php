@@ -107,7 +107,7 @@ class Pdo implements AdapterInterface
             $values[] = $value;
             $value_replacements[] = '?';
         }
-        $query = "INSERT INTO " . $this->table_prefix . $tableName . "(`" . implode('`, `', $columns) . "`) VALUES(" . implode(', ', $value_replacements) . ")";
+        $query = "REPLACE INTO " . $this->table_prefix . $tableName . "(`" . implode('`, `', $columns) . "`) VALUES(" . implode(', ', $value_replacements) . ")";
         $this->execute($query, $values);
         return $this->databaseConnection->lastInsertId();
     }
