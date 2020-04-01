@@ -1,0 +1,22 @@
+{
+    "name": "pressmind/lib",
+    "description": "Pressmind Core Library",
+    "type": "project",
+    "version": "1.0.0-alpha",
+    "authors": [
+        {
+            "name": "Michael Graute",
+            "email": "graute@pressmind.de"
+        }
+    ],
+    "minimum-stability": "alpha",
+    "require": {
+        "ext-json": "*",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pressmind\\": "src/Pressmind/"
+        }
+    }
+}
