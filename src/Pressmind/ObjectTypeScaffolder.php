@@ -64,12 +64,13 @@ class ObjectTypeScaffolder
         foreach($this->_object_definition->fields as $field_definition) {
             if(isset($field_definition->sections) && is_array($field_definition->sections)) {
                 foreach($field_definition->sections as $section) {
+                    $var_name = HelperFunctions::human_to_machine($field_definition->var_name);
                     if(isset($this->_mysql_type_map[$field_definition->type]) && $this->_mysql_type_map[$field_definition->type] != 'relation') {
-                        $database_fields[] = $field_definition->var_name . '_' . HelperFunctions::human_to_machine($section->name) . ' ' . $this->_mysql_type_map[$field_definition->type];
+                        $database_fields[] = $var_name . '_' . HelperFunctions::human_to_machine($section->name) . ' ' . $this->_mysql_type_map[$field_definition->type];
                     } else if($this->_mysql_type_map[$field_definition->type] == 'relation') {
-                        $relation_field_names[] = [$field_definition->var_name, $field_definition->type];
+                        $relation_field_names[] = [$var_name, $field_definition->type];
                     }
-                    $definition_fields[] = [$field_definition->var_name . '_' . HelperFunctions::human_to_machine($section->name), $field_definition->type, $this->_php_type_map[$this->_mysql_type_map[$field_definition->type]]];
+                    $definition_fields[] = [$var_name . '_' . HelperFunctions::human_to_machine($section->name), $field_definition->type, $this->_php_type_map[$this->_mysql_type_map[$field_definition->type]]];
                     if(!is_null($section->language) && !in_array($section->language, $languages)) {
                         $languages[] = $section->language;
                     }
