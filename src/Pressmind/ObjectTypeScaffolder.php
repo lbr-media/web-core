@@ -216,40 +216,37 @@ class ObjectTypeScaffolder
 
     public function generateExampleViewFile()
     {
-        $text = '<?php
-    /**
-     * @var array $data
-     */
-     
-    /**
-     * @var Custom\MediaType\\' . $this->_generateClassName($this->_object_definition->name) . ' $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '
-     */
-    $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . ' = $data[\'data\'];
-    
-    /**
-     * @var Pressmind\ORM\Object\Touristic\Booking\Package[] $booking_packages
-     */
-    $booking_packages = $data[\'booking_packages\'];
-    
-    /**
-     * @var Pressmind\ORM\Object\MediaObject $media_object
-     */
-    $media_object = $data[\'media_object\'];
-?>
-<h1>This is the Example View for Media Object Type "' . $this->_object_definition->name . '"</h1>
-<h4>Properties for Media Type</h4>
-<dl>';
+        $config = Registry::getInstance()->get('config');
+
+        $property_list = '';
+
         foreach ($this->_class_definitions['properties'] as $property_name => $property) {
             if($property['type'] == 'relation') {
-                $text .= "\n<dt>" . $property_name . '</dt><dd>value: ' . '<?php foreach($' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ' as $' . $property_name . '_item) {?><pre><?php print_r($' . $property_name . '_item->toStdClass());?></pre><?php }?></dd>';
+                $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>value: \n\t" . '<?php foreach($' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ' as $' . $property_name . "_item) {?>\n\t\t<pre>\n\t\t\t<?php print_r($" . $property_name . "_item->toStdClass());?>\n\t\t</pre>\n\t<?php }?>\n</dd>";
             } else if($property['type'] == 'datetime') {
-                $text .= "\n<dt>" . $property_name . '</dt><dd>value: ' . '<?php echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . '->format(\'Y-m-d h:i:s\');?></dd>';
+                $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>value: " . '<?php echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . "->format(\'Y-m-d h:i:s\');?></dd>";
             } else {
-                $text .= "\n<dt>" . $property_name . '</dt><dd>value: ' . '<?php echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ';?></dd>';
+                $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>value: " . '<?php echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ";?></dd>";
             }
         }
-        $text .= '</dl>';
-        $config = Registry::getInstance()->get('config');
+
+        $search = [
+            '###CLASSNAME###',
+            '###VARIABLENAME###',
+            '###OBJECTNAME###',
+            '###VIEWFILEPATH###',
+            '###PROPERTYLIST###'
+        ];
+
+        $replace = [
+            $this->_generateClassName($this->_object_definition->name),
+            strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)),
+            $this->_object_definition->name,
+            BASE_PATH . '/' . $config['view_scripts']['base_path'] . '/'  . $this->_generateClassName($this->_object_definition->name) .  '_Example.php',
+            $property_list
+        ];
+
+        $text = str_replace($search, $replace, file_get_contents(__DIR__ . '/ObjectTypeScaffolderTemplates/view_template.txt'));
         file_put_contents(BASE_PATH . '/' . $config['view_scripts']['base_path'] . '/'  . $this->_generateClassName($this->_object_definition->name) .  '_Example.php', $text);
     }
 
