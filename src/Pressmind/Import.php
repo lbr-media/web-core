@@ -471,11 +471,10 @@ class Import
                         if (!isset($values[$language])) $values[$language] = [];
                         $section_id = $section->id;
                         $value = null;
-                        if(isset($datafield->value) && isset($datafield->value->$section_id)) {
+                        if($datafield->type == 'categorytree' && isset($datafield->value)) {
+                            $value = $datafield->value;
+                        } else if(isset($datafield->value) && isset($datafield->value->$section_id)) {
                             $value = $datafield->value->$section_id;
-                            if($datafield->type == 'categorytree') {
-                                $value = $datafield->value;
-                            }
                         }
                         $values[$language]['language'] = $language;
                         $values[$language]['id_media_object'] = $media_object_data->id_media_object;
