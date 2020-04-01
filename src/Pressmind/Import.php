@@ -134,8 +134,12 @@ class Import
         $params['startIndex'] = $startIndex;
         $params['numItems'] = $numItems;
         $response = $this->_client->sendRequest('Text', 'search', $params);
+        $tmp_import_folder = APPLICATION_PATH . DIRECTORY_SEPARATOR . $this->_tmp_import_folder;
+        if(!is_dir($tmp_import_folder)) {
+            mkdir($tmp_import_folder);
+        }
         foreach ($response->result as $item) {
-            file_put_contents(APPLICATION_PATH . DIRECTORY_SEPARATOR . $this->_tmp_import_folder . DIRECTORY_SEPARATOR . $item->id_media_object, print_r($item, true));
+            file_put_contents($tmp_import_folder . DIRECTORY_SEPARATOR . $item->id_media_object, print_r($item, true));
         }
         if (count($response->result) >= $numItems && $startIndex < $response->count) {
             $nextStartIndex = $startIndex + $numItems;
