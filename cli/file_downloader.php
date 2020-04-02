@@ -1,5 +1,6 @@
 <?php
 
+use Pressmind\HelperFunctions;
 use Pressmind\Log\Writer;
 use Pressmind\ORM\Object\MediaObject\DataType\File;
 use Pressmind\Registry;
@@ -13,7 +14,8 @@ $config = Registry::getInstance()->get('config');
 
 $result = $db->fetchAll("SELECT * FROM pmt2core_media_object_files WHERE file_path IS NULL");
 
-$file_save_path = \Pressmind\HelperFunctions::buildPathString([WEBSERVER_DOCUMENT_ROOT, $config['file_download']['download_file_path']]);
+$file_save_path = HelperFunctions::buildPathString([WEBSERVER_DOCUMENT_ROOT, $config['file_download']['download_file_path']]);
+
 if(!is_dir($file_save_path)) {
     mkdir($file_save_path, 0777, true);
 }
