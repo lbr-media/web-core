@@ -51,7 +51,7 @@ foreach ($result as $image_result) {
             $derivative->id_image = $image->getId();
             $derivative->name = $derivative_name;
             $derivative->path = $path;
-            $derivative->uri = $config['imageprocessor']['image_file_path'] . '/' . pathinfo($path)['filename'] . '.' . pathinfo($path)['extension'];
+            $derivative->uri = '/' . $config['imageprocessor']['image_file_path'] . '/' . pathinfo($path)['filename'] . '.' . pathinfo($path)['extension'];
             $derivative->create();
         } catch(ImagickException | Exception $e) {
             echo 'Failed to process image: ' . $image->file_name .  "\n";
