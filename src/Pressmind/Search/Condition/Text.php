@@ -120,6 +120,19 @@ class Text implements ConditionInterface
     }
 
     /**
+     * @param null $pObjectTypeId
+     * @param null $pSearchTerms
+     * @param null $pProperties
+     * @param string $pLogicOperator
+     * @return Text
+     */
+    public static function create($pObjectTypeId = null, $pSearchTerms = null, $pProperties = null, $pLogicOperator = 'AND')
+    {
+        $object = new self($pObjectTypeId, $pSearchTerms, $pProperties, $pLogicOperator = 'AND');
+        return $object;
+    }
+
+    /**
      * @param stdClass $config
      */
     public function setConfig($config) {
