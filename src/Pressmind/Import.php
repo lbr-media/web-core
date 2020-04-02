@@ -187,7 +187,11 @@ class Import
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . '--------------------------------------------------------------------------------', Writer::OUTPUT_FILE, 'import.log');
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . ')', Writer::OUTPUT_FILE, 'import.log');
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . '): REST Request started', Writer::OUTPUT_FILE, 'import.log');
-        $response = $this->_client->sendRequest('Text', 'getById', ['ids' => $id_media_object, 'withTouristicData' => 1, 'withDynamicData' => 1]);
+        try {
+            $response = $this->_client->sendRequest('Text', 'getById', ['ids' => $id_media_object, 'withTouristicData' => 1, 'withDynamicData' => 1]);
+        } catch (Exception $e) {
+            $response = null;
+        }
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . '): REST Request done', Writer::OUTPUT_FILE, 'import.log');
         $import_error = false;
         if (is_array($response) && count($response) > 0) {
