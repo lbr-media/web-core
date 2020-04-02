@@ -5,7 +5,7 @@
 * MySQL or MariaDB
 * ImageMagick (PHP-Extension) or GD-Lib
 * cURL
-* a presmind® License ;-)
+* a pressmind® License ;-)
 
 ### pressmind® API Credentials
 You need a pressmind® REST API Access. (API Key, User, Password)
