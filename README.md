@@ -1,15 +1,36 @@
-# Pressmind Web Core
+# pressmind® web-core SDK
 
-## v 0.0.1alpha
+##  System Requirements
+* PHP 7.*
+* MySQL or MariaDB
+* ImageMagick (PHP-Extension) or GD-Lib
+* cURL
+* a presmind® License ;-)
+
+### pressmind® API Credentials
+You need a pressmind® REST API Access. (API Key, User, Password)
+Ask your pressmind® Integration-Manager.
 
 ## Quickstart
 
-### Installation
-* clone the repository
+### 1. Installation
+* clone the repository 
+
+```shell script
+git clone https://github.com/pressmind/web-core.git
+```
+* create a MySQL database
+
+```cli script
+mysql -u root -p;
+mysql CREATE DATABASE pressmind;
+```
+
 * edit the configuration file config.json
 * Insert your database information under development.database
 ```json
-{
+//... SNIP config.json
+{ 
     "development": {
         "database": {
             "username": "yourusername",
@@ -20,9 +41,11 @@
         }
     }
 }
+//... SNAP
 ```
 * Insert your pressmind API credentials under development.rest.client (credentials are provided by pressmind)
 ```json
+//... SNIP config.json
 {
     "development": {
         "rest": {
@@ -35,29 +58,32 @@
         }
     }
 }
+//... SNAP
 ```
 * save the config.json file
 * on a console move to folder cli and execute install.php
 ```shell script
+# Install
 your-project-folder/cli$ php install.php
 ```
 This will install the necessary database tables and generate the needed model-definitions for the media object types.  
 Additionally some basic example php files that show the use of Views are generated in the folder examples/views as well as some html files with information on the installed media object types. You can find these under docs/objecttypes 
-### Data Import
-To import data from pressmind into the database use the file cli/import.php  
+### 2. Import from pressmind®
+To import data from pressmind run the script cli/import.php  
 To do a fullimport (which is recommended after a fresh install add the argument fullimport)
 ```shell script
+# Full Import
 your-project-folder/cli$ php import.php fullimport
 ```
-Depending on the amount of data that is stored in pressmind, the fullimport can last while.  
+Depending on the amount of data that is stored in pressmind, the fullimport can last a while.  
 For each media object all descriptive and touristic data will be imported into the database. Additionally all related files and images will be downloaded to the folder /assets.
-### Search and Display Data
+### 3. Search and Display Data
 After the install.php script has been executed, some example files can be found in the examples folder:
 The index.php file demonstrates a simple search and will display a list of found data-sets with a link to the detail.php which demonstrates how a media_object can be rendered.  
 The detail.php will render the information based on the view scripts that can be found in the examples/views folder.
 
 ### Quick Examples
-#### Search for media objects
+#### 1. Search for media objects
 searchMediaObjects.php
 ```php
 <?php
@@ -136,7 +162,7 @@ Reise_Test.php (see also the *_Example.php scripts in /examples/views for refere
 
     }
 ```
-#### Get a media object by ID
+#### 2. Get a media object by ID
 getById.php
 ```php
 <?php
