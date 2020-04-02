@@ -222,7 +222,11 @@ class ObjectTypeScaffolder
 
         foreach ($this->_class_definitions['properties'] as $property_name => $property) {
             if($property['type'] == 'relation') {
-                $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['relation']['class'] . "\n<br>value: \n\t" . '<?php foreach($' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ' as $' . $property_name . "_item) {?>\n\t\t<pre>\n\t\t\t<?php print_r($" . $property_name . "_item->toStdClass());?>\n\t\t</pre>\n\t<?php }?>\n</dd>";
+                if($property['relation']['class'] == '\Pressmind\ORM\Object\MediaObject\DataType\Picture') {
+                    $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['relation']['class'] . "\n<br>value: \n\t" . '<?php foreach($' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ' as $' . $property_name . "_item) {?>\n\t\t<img src=\"<?php echo $" . $property_name . "_item->getUri('thumbnail');?>\" title=\"<?php echo $" . $property_name . "_item->copyright;?>\" alt=\"<?php echo $" . $property_name . "_item->alt;?>\">\n\t\t<pre>\n\t\t\t<?php print_r($" . $property_name . "_item->toStdClass());?>\n\t\t</pre>\n\t<?php }?>\n</dd>";
+                } else {
+                    $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['relation']['class'] . "\n<br>value: \n\t" . '<?php foreach($' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ' as $' . $property_name . "_item) {?>\n\t\t<pre>\n\t\t\t<?php print_r($" . $property_name . "_item->toStdClass());?>\n\t\t</pre>\n\t<?php }?>\n</dd>";
+                }
             } else if($property['type'] == 'datetime') {
                 $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['type'] . "\n<br>value: " . '<?php echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . "->format(\'Y-m-d h:i:s\');?></dd>";
             } else {
