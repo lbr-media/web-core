@@ -102,7 +102,7 @@ class Date extends AbstractObject
                         'title' => 'Id_starting_point',
                         'name' => 'id_starting_point',
                         'type' => 'integer',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
@@ -118,7 +118,7 @@ class Date extends AbstractObject
                         'title' => 'Code',
                         'name' => 'code',
                         'type' => 'string',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
@@ -161,7 +161,7 @@ class Date extends AbstractObject
                         'title' => 'Pax_min',
                         'name' => 'pax_min',
                         'type' => 'integer',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
@@ -177,7 +177,7 @@ class Date extends AbstractObject
                         'title' => 'Pax_max',
                         'name' => 'pax_max',
                         'type' => 'integer',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
@@ -193,7 +193,7 @@ class Date extends AbstractObject
                         'title' => 'Season',
                         'name' => 'season',
                         'type' => 'string',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>

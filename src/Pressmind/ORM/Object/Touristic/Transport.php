@@ -114,7 +114,7 @@ class Transport extends AbstractObject
                         'title' => 'Code',
                         'name' => 'code',
                         'type' => 'string',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
@@ -180,7 +180,7 @@ class Transport extends AbstractObject
                         'title' => 'Order',
                         'name' => 'order',
                         'type' => 'integer',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
@@ -196,7 +196,7 @@ class Transport extends AbstractObject
                         'title' => 'State',
                         'name' => 'state',
                         'type' => 'integer',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
