@@ -359,11 +359,11 @@ class MediaObject extends AbstractObject
             }
         }
         $cheapest_prices = CheapestPriceSpeed::listAll($where . ' AND option_occupancy = 2', ['price_total' => 'ASC', 'date_departure' => 'ASC']);
-        if(empty($cheapest_price)) {
-            $cheapest_price = CheapestPriceSpeed::listAll($where . ' AND option_occupancy = 1', ['price_total' => 'ASC', 'date_departure' => 'ASC']);
+        if(empty($cheapest_prices)) {
+            $cheapest_prices = CheapestPriceSpeed::listAll($where . ' AND option_occupancy = 1', ['price_total' => 'ASC', 'date_departure' => 'ASC']);
         }
-        if(empty($cheapest_price)) {
-            $cheapest_price = CheapestPriceSpeed::listAll($where, ['price_total' => 'ASC', 'date_departure' => 'ASC', 'date_departure' => 'ASC']);
+        if(empty($cheapest_prices)) {
+            $cheapest_prices = CheapestPriceSpeed::listAll($where, ['price_total' => 'ASC', 'date_departure' => 'ASC', 'date_departure' => 'ASC']);
         }
         return $cheapest_prices;
     }
