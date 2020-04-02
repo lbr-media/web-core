@@ -1,6 +1,8 @@
 <?php
 namespace Pressmind;
 
+use Exception;
+use ImagickException;
 use Pressmind\Image\Download;
 use Pressmind\Image\Processor\Adapter\Factory;
 use Pressmind\Image\Processor\Config;
@@ -49,9 +51,9 @@ foreach ($result as $image_result) {
             $derivative->id_image = $image->getId();
             $derivative->name = $derivative_name;
             $derivative->path = $path;
-            $derivative->uri = '/assets/img/' . pathinfo($path)['filename'] . '.' . pathinfo($path)['extension'];
+            $derivative->uri = $config['imageprocessor']['image_file_path'] . '/' . pathinfo($path)['filename'] . '.' . pathinfo($path)['extension'];
             $derivative->create();
-        } catch(Exception $e) {
+        } catch(ImagickException | Exception $e) {
             echo 'Failed to process image: ' . $image->file_name .  "\n";
         }
     }
