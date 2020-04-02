@@ -2,6 +2,7 @@
 namespace Pressmind;
 use Exception;
 use Pressmind\Log\Writer;
+use Pressmind\REST\Client;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
@@ -60,10 +61,17 @@ try {
     Writer::write('Requesting and parsing information on media object types ...', Writer::OUTPUT_BOTH, 'install.log');
     $importer = new Import();
     $ids = [];
+    $client = new Client();
+    $response = $client->sendRequest('ObjectType', 'getAll');
     $config = Registry::getInstance()->get('config');
-    foreach ($config['data']['media_types'] as $id => $name) {
-        $ids[] = $id;
+    $media_types = [];
+    foreach ($response->result as $item) {
+        $media_types[$item->id_type] = $item->type_name;
+        $ids[] = $item->id_type;
     }
+    $config['data']['media_types'] = $media_types;
+    Registry::getInstance()->get('config_adapter')->write($config);
+    Registry::getInstance()->add('config', $config);
     $importer->importMediaObjectTypes($ids);
 } catch (Exception $e) {
     Writer::write($e->getMessage(), Writer::OUTPUT_BOTH, 'install_errors.log');

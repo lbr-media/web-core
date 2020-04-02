@@ -27,7 +27,8 @@ Autoloader::register();
  * @See the example config.json file for the required structure and options
  * @See the different config adapters for further information on YAML, XML and INI files (Pressmind\Config\Adapter)
  */
-$config = (new Config('json', HelperFunctions::buildPathString([BASE_PATH, 'config.json']), ENV))->read();
+$config_adapter = new Config('json', HelperFunctions::buildPathString([BASE_PATH, 'config.json']), ENV);
+$config = $config_adapter->read();
 
 /**
  * Configure the database adapter
@@ -50,4 +51,5 @@ $db = new Pdo($db_config);
  */
 $registry = Registry::getInstance();
 $registry->add('config', $config);
+$registry->add('config_adapter', $config_adapter);
 $registry->add('db', $db);

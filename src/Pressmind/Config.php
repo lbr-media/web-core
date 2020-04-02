@@ -37,4 +37,8 @@ class Config
     {
         return $this->_adapter->read();
     }
+
+    public function write($data) {
+        $this->_adapter->write($data);
+    }
 }
