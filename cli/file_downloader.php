@@ -1,12 +1,12 @@
 <?php
 
+use Pressmind\Log\Writer;
 use Pressmind\ORM\Object\MediaObject\DataType\File;
 use Pressmind\Registry;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
-$start_time = microtime(true);
-echo number_format(microtime(true) - $start_time, 4) . " sec: image_processor.php started\n";
+Writer::write('File downloader started', WRITER::OUTPUT_FILE, 'file_downloader.log');
 
 $db = Registry::getInstance()->get('db');
 $config = Registry::getInstance()->get('config');
@@ -17,18 +17,23 @@ $file_save_path = \Pressmind\HelperFunctions::buildPathString([WEBSERVER_DOCUMEN
 if(!is_dir($file_save_path)) {
     mkdir($file_save_path, 0777, true);
 }
-echo number_format(microtime(true) - $start_time, 4) . " sec: " . print_r($result, true) . "\n";
+
+Writer::write('Downloading ' . count($result) . ' files', WRITER::OUTPUT_FILE, 'file_downloader.log');
 
 foreach ($result as $file_result) {
-    $file = new File();
-    $file->fromStdClass($file_result);
-    $download_url = $file->download_url;
-    $file_name = $file->file_name;
-    echo number_format(microtime(true) - $start_time, 4) . " sec: Downloading file from " . $download_url. "\n";
-    $downloader = new \Pressmind\Image\Download();
-    $downloader->download($download_url, $file_save_path, $file_name);
-    $file->file_path = $file_save_path;
-    $file->download_url = $config['file_download']['download_file_path'] . '/' . $file_name;
-    $file->update();
+    try {
+        $file = new File();
+        $file->fromStdClass($file_result);
+        $download_url = $file->download_url;
+        $file_name = $file->file_name;
+        Writer::write('Downloading file from ' . $download_url, WRITER::OUTPUT_FILE, 'file_downloader.log');
+        $downloader = new \Pressmind\Image\Download();
+        $downloader->download($download_url, $file_save_path, $file_name);
+        $file->file_path = $file_save_path;
+        $file->download_url = $config['file_download']['download_file_path'] . '/' . $file_name;
+        Writer::write('Downloaded to ' . $file_save_path . '/' . $file_name, WRITER::OUTPUT_FILE, 'file_downloader.log');
+        $file->update();
+    } catch (Exception $e) {
+        Writer::write($e->getMessage(), WRITER::OUTPUT_FILE, 'file_downloader_error.log');
+    }
 }
-
