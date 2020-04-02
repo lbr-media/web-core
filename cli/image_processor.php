@@ -1,11 +1,13 @@
 <?php
 namespace Pressmind;
 
+use Error;
 use Exception;
 use ImagickException;
 use Pressmind\Image\Download;
 use Pressmind\Image\Processor\Adapter\Factory;
 use Pressmind\Image\Processor\Config;
+use Pressmind\Log\Writer;
 use Pressmind\ORM\Object\MediaObject\DataType\Picture;
 use Pressmind\ORM\Object\MediaObject\DataType\Picture\Derivative;
 
@@ -14,34 +16,51 @@ if(php_sapi_name() == 'cli') {
 }
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
-$start_time = microtime(true);
 
-echo number_format(microtime(true) - $start_time, 4) . " sec: image_processor.php started\n";
+Writer::write('Image processor started', WRITER::OUTPUT_FILE, 'image_processor.log');
 
 $db = Registry::getInstance()->get('db');
 $config = Registry::getInstance()->get('config');
+
 $result = $db->fetchAll("SELECT * FROM pmt2core_media_object_images WHERE path IS NULL");
+
 $image_save_path = HelperFunctions::buildPathString([WEBSERVER_DOCUMENT_ROOT, $config['imageprocessor']['image_file_path']]);
+
 if(!is_dir($image_save_path)) {
     mkdir($image_save_path, 0777, true);
 }
 
-foreach ($result as $image_result) {
-    $image = new Picture();
-    $image->fromStdClass($image_result);
-    $download_url = $image->tmp_url;
-    echo number_format(microtime(true) - $start_time, 4) . " sec: Downloading image from " . $download_url. "\n";
-    $downloader = new Download();
-    $query = [];
-    $url = parse_url($image->tmp_url);
-    parse_str($url['query'], $query);
-    $filename = $downloader->download($download_url, $image_save_path, $image->id_media_object . '_' . $query['id']);
-    $image->path = $image_save_path;
-    $image->uri = $config['imageprocessor']['image_file_path'];
-    $image->file_name = $filename;
-    $image->update();
+Writer::write('Processing ' . count($result) . ' images', WRITER::OUTPUT_FILE, 'image_processor.log');
 
+foreach ($result as $image_result) {
+    try {
+        $image = new Picture();
+        $image->fromStdClass($image_result);
+        $download_url = $image->tmp_url;
+        Writer::write('Downloading image from ' . $download_url, WRITER::OUTPUT_FILE, 'image_processor.log');
+        $downloader = new Download();
+        $query = [];
+        $url = parse_url($image->tmp_url);
+        parse_str($url['query'], $query);
+        $filename = $downloader->download($download_url, $image_save_path, $image->id_media_object . '_' . $query['id']);
+    } catch (Exception $e) {
+        Writer::write($e->getMessage(), WRITER::OUTPUT_FILE, 'image_processor_error.log');
+        continue;
+    }
+    Writer::write('Saving image ' . $filename, WRITER::OUTPUT_FILE, 'image_processor.log');
+    try {
+        $image = new Picture();
+        $image->path = $image_save_path;
+        $image->uri = $config['imageprocessor']['image_file_path'];
+        $image->file_name = $filename;
+        $image->update();
+    } catch (Exception $e) {
+        Writer::write($e->getMessage(), WRITER::OUTPUT_FILE, 'image_processor_error.log');
+        continue;
+    }
+    Writer::write('Creating derivatives', WRITER::OUTPUT_FILE, 'image_processor.log');
     foreach ($config['imageprocessor']['derivatives'] as $derivative_name => $derivative_config) {
+        Writer::write('Creating derivative ' . $derivative_name, WRITER::OUTPUT_FILE, 'image_processor.log');
         try {
             $imageProcessor = Factory::create($config['imageprocessor']['adapter']);
             $processor_config = Config::create($derivative_config);
@@ -53,9 +72,11 @@ foreach ($result as $image_result) {
             $derivative->path = $path;
             $derivative->uri = '/' . $config['imageprocessor']['image_file_path'] . '/' . pathinfo($path)['filename'] . '.' . pathinfo($path)['extension'];
             $derivative->create();
-        } catch(ImagickException | Exception $e) {
-            echo 'Failed to process image: ' . $image->file_name .  "\n";
+            Writer::write('Derivative ' . $derivative_name . ' created: ' . $derivative->uri, WRITER::OUTPUT_FILE, 'image_processor.log');
+        } catch(ImagickException | Exception | Error $e) {
+            Writer::write($e->getMessage(), WRITER::OUTPUT_FILE, 'image_processor_error.log');
+            continue;
         }
     }
 }
-
+Writer::write('Image processor finished', WRITER::OUTPUT_FILE, 'image_processor.log');

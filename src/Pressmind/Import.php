@@ -510,14 +510,12 @@ class Import
     public function postImport()
     {
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::postImport(): Starting post import processes ', Writer::OUTPUT_FILE, 'import.log');
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::postImport(): bash -c "exec nohup setsid php ' . APPLICATION_PATH . '/cli/image_processor.php >> ' . APPLICATION_PATH . '/logs/image_processor.log 2>> ' . APPLICATION_PATH . '/logs/image_processor_error.log &"', Writer::OUTPUT_FILE, 'import.log');
-        //exec('bash -c "exec nohup setsid php ' . APPLICATION_PATH . '/cli/image_processor.php >> ' . APPLICATION_PATH . '/logs/image_processor.log 2>> ' . APPLICATION_PATH . '/logs/image_processor_error.log &"');
-        //on mac os setsid does not work, so we leave it out
-        exec('bash -c "exec nohup php ' . APPLICATION_PATH . '/cli/image_processor.php >> ' . APPLICATION_PATH . '/logs/image_processor.log 2>> ' . APPLICATION_PATH . '/logs/image_processor_error.log &"');
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::postImport(): bash -c "exec nohup setsid php ' . APPLICATION_PATH . '/cli/file_downloader.php >> ' . APPLICATION_PATH . '/logs/file_downloader.log 2>> ' . APPLICATION_PATH . '/logs/file_downloader_error.log &"', Writer::OUTPUT_FILE, 'import.log');
-        //exec('bash -c "exec nohup setsid php ' . APPLICATION_PATH . '/cli/file_downloader.php >> ' . APPLICATION_PATH . '/logs/file_downloader.log 2>> ' . APPLICATION_PATH . '/logs/file_downloader_error.log &"');
-        //on mac os setsid does not work, so we leave it out
-        exec('bash -c "exec nohup php ' . APPLICATION_PATH . '/cli/file_downloader.php >> ' . APPLICATION_PATH . '/logs/file_downloader.log 2>> ' . APPLICATION_PATH . '/logs/file_downloader_error.log &"');
+
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::postImport(): bash -c "exec nohup php ' . APPLICATION_PATH . '/cli/image_processor.php > /dev/null 2>&1 &"', Writer::OUTPUT_FILE, 'import.log');
+        exec('bash -c "exec nohup php ' . APPLICATION_PATH . '/cli/image_processor.php > /dev/null 2>&1 &"');
+
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::postImport(): bash -c "exec nohup php ' . APPLICATION_PATH . '/cli/file_downloader.php > /dev/null 2>&1 &"', Writer::OUTPUT_FILE, 'import.log');
+        exec('bash -c "exec nohup php ' . APPLICATION_PATH . '/cli/file_downloader.php > /dev/null 2>&1 &"');
     }
 
     /**
