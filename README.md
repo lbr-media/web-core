@@ -3,8 +3,12 @@
 ##  System Requirements
 * PHP 7.*
 * MySQL or MariaDB
-* ImageMagick (PHP-Extension) or GD-Lib
-* cURL
+* PHP-Extensions:
+    * ext-imagick or ext-gd
+    * ext-json
+    * ext-curl
+    * ext-bcmath
+    * ext-pdo
 * a pressmind® License ;-)
 
 ### pressmind® API Credentials
