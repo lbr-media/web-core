@@ -15,6 +15,7 @@ $models = [
     '\CategoryTree',
     '\CategoryTree\Item',
     '\CheapestPriceSpeed',
+    '\FulltextSearch',
     '\MediaObject',
     '\MediaObject\DataType\Categorytree',
     '\MediaObject\DataType\File',
