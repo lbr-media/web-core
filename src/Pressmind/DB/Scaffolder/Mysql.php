@@ -54,6 +54,7 @@ class Mysql
             $sql = "ALTER TABLE " . $this->_orm_object->getDbTableName() . " ";
         }
         $unique = array();
+        $index = array();
         $i = 0;
         foreach ($pFields as $fieldName => $fieldInfo) {
             if ($fieldInfo['type'] != 'relation') {
@@ -72,6 +73,11 @@ class Mysql
                 if (isset($fieldInfo['unique']) && TRUE == $fieldInfo['unique']) {
                     $unique[] = $fieldName;
                 }
+                if(isset($fieldInfo['index']) && is_array($fieldInfo['index'])) {
+                    foreach ($fieldInfo['index'] as $index_type) {
+                        $index[$index_type][] = $fieldName;
+                    }
+                }
                 $additional_sql[] = $null_allowed;
                 if (isset($fieldInfo['default_value'])) {
                     $additional_sql[] = " DEFAULT '" . $fieldInfo['default_value'] . "'";
@@ -88,11 +94,18 @@ class Mysql
             $i++;
         }
         if (false == $pAlterTable) {
-            $sql .= "PRIMARY KEY (" . $this->_orm_object->getDbPrimaryKey() . ")";
+            $sql .= " PRIMARY KEY (" . $this->_orm_object->getDbPrimaryKey() . ")";
         }
         if (count($unique) > 0 && false == $pAlterTable) {
             foreach ($unique as $unique_field_name) {
                 $sql .= ", UNIQUE KEY " . $unique_field_name . " (" . $unique_field_name . ")";
+            }
+        }
+        if (count($index) > 0 && false == $pAlterTable) {
+            foreach ($index as $index_type => $index_field_names) {
+                foreach ($index_field_names as $index_field_name) {
+                    $sql .= ", " . strtoupper($index_type) . " " . $index_field_name .  " (" . $index_field_name . ")";
+                }
             }
         }
         if (false == $pAlterTable) {
