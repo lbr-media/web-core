@@ -6,7 +6,8 @@
         "database": {
             "username": "",
             "password": "",
-            "host": "",
+            "host": "loclhost",
+            "port": "3306",
             "dbname": "",
             "engine": "Mysql"
         },
@@ -32,8 +33,12 @@
             ]
         },
         "data": {
-            "media_types": {
+            "touristic": {
+                "origins": [
+                    "0"
+                ]
             },
+            "media_types": {},
             "sections": {
                 "default": "Default",
                 "fallback": "Default",
@@ -78,6 +83,6 @@
             }
         }
     },
-    "testing": {},
-    "production": {}
+    "testing": [],
+    "production": []
 }

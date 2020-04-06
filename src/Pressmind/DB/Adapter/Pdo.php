@@ -33,7 +33,7 @@ class Pdo implements AdapterInterface
      */
     public function __construct($config)
     {
-        $this->databaseConnection = new \PDO('mysql:host=' . $config->host . ';dbname=' . $config->dbname . ';charset=utf8', $config->username, $config->password);
+        $this->databaseConnection = new \PDO('mysql:host=' . $config->host . ';port=' . $config->port . ';dbname=' . $config->dbname . ';charset=utf8', $config->username, $config->password);
         $this->table_prefix = $config->table_prefix;
     }
 
