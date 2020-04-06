@@ -182,6 +182,7 @@ class Import
      */
     public function importMediaObject($id_media_object)
     {
+        $id_media_object = intval($id_media_object);
         $db = Registry::getInstance()->get('db');
         $this->_start_time = microtime(true);
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . '--------------------------------------------------------------------------------', Writer::OUTPUT_FILE, 'import.log');
@@ -507,6 +508,9 @@ class Import
         return $category_tree_ids;
     }
 
+    /**
+     * @throws Exception
+     */
     public function postImport()
     {
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::postImport(): Starting post import processes ', Writer::OUTPUT_FILE, 'import.log');
@@ -539,15 +543,6 @@ class Import
     private function _revertCurrentImport()
     {
 
-    }
-
-    /**
-     * @return Custom\AbstractMediaType
-     */
-    public function test()
-    {
-        $media_object = Factory::createById(607);
-        return $media_object;
     }
 
     /**
