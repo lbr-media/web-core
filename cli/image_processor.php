@@ -43,13 +43,7 @@ foreach ($result as $image_result) {
         $url = parse_url($image->tmp_url);
         parse_str($url['query'], $query);
         $filename = $downloader->download($download_url, $image_save_path, $image->id_media_object . '_' . $query['id']);
-    } catch (Exception $e) {
-        Writer::write($e->getMessage(), WRITER::OUTPUT_FILE, 'image_processor_error.log');
-        continue;
-    }
-    Writer::write('Saving image ' . $filename, WRITER::OUTPUT_FILE, 'image_processor.log');
-    try {
-        $image = new Picture();
+        Writer::write('Saving image ' . $filename, WRITER::OUTPUT_FILE, 'image_processor.log');
         $image->path = $image_save_path;
         $image->uri = $config['imageprocessor']['image_file_path'];
         $image->file_name = $filename;
