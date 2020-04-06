@@ -21,17 +21,17 @@ switch ($args[1]) {
         }
         break;
     case 'mediaobject':
-        if(is_numeric($args[2])) {
-            Writer::write('Importing mediaobject ID: ' . $args[2], Writer::OUTPUT_BOTH, 'import.log');
+        if(!empty($args[2])) {
+            Writer::write('Importing mediaobject ID(s): ' . $args[2], Writer::OUTPUT_BOTH, 'import.log');
+            $ids = array_map('trim', explode(',', $args[2]));
             try {
-                $importer->importMediaObject(intval($args[2]));
-                $importer->postImport();
+                $importer->importMediaObjectsFromArray($ids);
                 Writer::write('Import done.', Writer::OUTPUT_BOTH, 'import.log');
             } catch(Exception $e) {
                 Writer::write($e->getMessage(), Writer::OUTPUT_BOTH, 'import_error.log');
             }
         } else {
-            echo "Missing object ID or object ID is not numeric\n";
+            echo "Missing mediaobject id(s)";
         }
         break;
     case 'objecttypes':
