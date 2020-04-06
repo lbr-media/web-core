@@ -12,7 +12,10 @@
     "minimum-stability": "alpha",
     "require": {
         "ext-json": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-bcmath": "*",
+        "ext-pdo": "*"
+
     },
     "autoload": {
         "psr-4": {
