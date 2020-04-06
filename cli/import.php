@@ -27,6 +27,7 @@ switch ($args[1]) {
             try {
                 $importer->importMediaObjectsFromArray($ids);
                 Writer::write('Import done.', Writer::OUTPUT_BOTH, 'import.log');
+                $importer->postImport();
             } catch(Exception $e) {
                 Writer::write($e->getMessage(), Writer::OUTPUT_BOTH, 'import_error.log');
             }
