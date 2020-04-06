@@ -22,8 +22,12 @@ Writer::write('Image processor started', WRITER::OUTPUT_FILE, 'image_processor.l
 $db = Registry::getInstance()->get('db');
 $config = Registry::getInstance()->get('config');
 
-$result = $db->fetchAll("SELECT * FROM pmt2core_media_object_images WHERE path IS NULL");
-
+try {
+    /** @var Picture[] $result */
+    $result = Picture::listAll(array('path' => 'IS NULL'));
+} catch (Exception $e) {
+    Writer::write($e->getMessage(), WRITER::OUTPUT_FILE, 'image_processor_error.log');
+}
 $image_save_path = HelperFunctions::buildPathString([WEBSERVER_DOCUMENT_ROOT, $config['imageprocessor']['image_file_path']]);
 
 if(!is_dir($image_save_path)) {
@@ -32,10 +36,8 @@ if(!is_dir($image_save_path)) {
 
 Writer::write('Processing ' . count($result) . ' images', WRITER::OUTPUT_FILE, 'image_processor.log');
 
-foreach ($result as $image_result) {
+foreach ($result as $image) {
     try {
-        $image = new Picture();
-        $image->fromStdClass($image_result);
         $download_url = $image->tmp_url;
         Writer::write('Downloading image from ' . $download_url, WRITER::OUTPUT_FILE, 'image_processor.log');
         $downloader = new Download();
