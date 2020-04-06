@@ -6,7 +6,7 @@
         "database": {
             "username": "",
             "password": "",
-            "host": "loclhost",
+            "host": "localhost",
             "port": "3306",
             "dbname": "",
             "engine": "Mysql"
