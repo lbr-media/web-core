@@ -228,7 +228,7 @@ class ObjectTypeScaffolder
                     $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['relation']['class'] . "\n<br>value: \n\t" . '<?php foreach($' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ' as $' . $property_name . "_item) {?>\n\t\t<pre>\n\t\t\t<?php print_r($" . $property_name . "_item->toStdClass());?>\n\t\t</pre>\n\t<?php }?>\n</dd>";
                 }
             } else if($property['type'] == 'datetime') {
-                $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['type'] . "\n<br>value: " . '<?php echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . "->format(\'Y-m-d h:i:s\');?></dd>";
+                $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['type'] . "\n<br>value: " . '<?php if(!is_null($' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ')) { echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . "->format('Y-m-d h:i:s'); }?></dd>";
             } else {
                 $property_list .= "\n<dt>" . $property_name . "</dt>\n<dd>type: " . $property['type'] . "\n<br>value: " . '<?php echo $' . strtolower(HelperFunctions::human_to_machine($this->_object_definition->name)) . '->' . $property_name . ";?></dd>";
             }
