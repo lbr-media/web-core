@@ -27,7 +27,8 @@ git clone https://github.com/pressmind/web-core.git
 
 ```cli script
 mysql -u root -p;
-mysql CREATE DATABASE pressmind;
+mysql> CREATE DATABASE pressmind;
+mysql> GRANT ALL ON pressmind.* TO 'my_database_user'@'localhost' IDENTIFIED BY 'my_database_password' WITH GRANT OPTION;
 ```
 
 * edit the configuration file config.json
