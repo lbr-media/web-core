@@ -21,7 +21,7 @@ $models = [
     '\MediaObject\DataType\File',
     '\MediaObject\DataType\Link',
     '\MediaObject\DataType\Location',
-    '\MediaObject\DataType\ObjectLink',
+    '\MediaObject\DataType\Objectlink',
     '\MediaObject\DataType\Picture',
     '\MediaObject\DataType\Picture\Derivative',
     '\MediaObject\DataType\Table',
