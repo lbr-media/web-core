@@ -128,7 +128,7 @@ class Text implements ConditionInterface
      */
     public static function create($pObjectTypeId = null, $pSearchTerms = null, $pProperties = null, $pLogicOperator = 'AND')
     {
-        $object = new self($pObjectTypeId, $pSearchTerms, $pProperties, $pLogicOperator = 'AND');
+        $object = new self($pObjectTypeId, $pSearchTerms, $pProperties, $pLogicOperator);
         return $object;
     }
 
