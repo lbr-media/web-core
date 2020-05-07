@@ -64,7 +64,7 @@ class FulltextSearch extends AbstractObject
                 'title' => 'Variable Name',
                 'name' => 'var_name',
                 'type' => 'longtext',
-                'required' => true,
+                'required' => false,
                 'filters' => NULL,
                 'index' => [
                     'fulltext'
