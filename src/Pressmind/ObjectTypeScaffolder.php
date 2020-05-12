@@ -5,13 +5,34 @@ namespace Pressmind;
 
 use \Exception;
 use Pressmind\Log\Writer;
+use stdClass;
 
 class ObjectTypeScaffolder
 {
 
+    /**
+     * @var array
+     */
     private $_log = [];
+
+    /**
+     * @var array
+     */
+    private $_errors = [];
+
+    /**
+     * @var stdClass
+     */
     private $_object_definition;
+
+    /**
+     * @var array
+     */
     private $_class_definitions;
+
+    /**
+     * @var array
+     */
     private $_mysql_type_map = [
         'text' => 'longtext',
         'integer' => 'int(11)',
@@ -28,6 +49,10 @@ class ObjectTypeScaffolder
         'link' => 'relation',
         'key_value' => 'relation',
     ];
+
+    /**
+     * @var array
+     */
     private $_php_type_map = [
         'integer' => 'integer',
         'int' => 'integer',
@@ -36,14 +61,26 @@ class ObjectTypeScaffolder
         'datetime' => 'DateTime',
         'relation' => 'relation'
     ];
+
+    /**
+     * @var string
+     */
     private $_tablename;
 
+    /**
+     * ObjectTypeScaffolder constructor.
+     * @param stdClass $pObjectDefinition
+     * @param string $pTableName
+     */
     public function __construct($pObjectDefinition, $pTableName)
     {
         $this->_object_definition = $pObjectDefinition;
         $this->_tablename = $pTableName;
     }
 
+    /**
+     * @throws Exception
+     */
     public function parse()
     {
         $conf = Registry::getInstance()->get('config');
@@ -89,6 +126,25 @@ class ObjectTypeScaffolder
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function hasErrors()
+    {
+        return count($this->_errors) > 0;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->_errors;
+    }
+
+    /**
+     * @param array $pDefinitionFields
+     */
     private function _generateORMFile($pDefinitionFields) {
         $definitions = [
             'class' => [
