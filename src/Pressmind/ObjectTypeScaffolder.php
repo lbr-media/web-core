@@ -25,7 +25,8 @@ class ObjectTypeScaffolder
         'file' => 'relation',
         'categorytree' => 'relation',
         'location' => 'relation',
-        'link' => 'relation'
+        'link' => 'relation',
+        'key_value' => 'relation',
     ];
     private $_php_type_map = [
         'integer' => 'integer',
