@@ -536,6 +536,9 @@ class Import
             $table_name = $result->id;
             $scaffolder = new ObjectTypeScaffolder($result, $table_name);
             $scaffolder->parse();
+            if($scaffolder->hasErrors()) {
+                echo ("WARNING: Importer::importMediaObjectTypes(" . implode(',' ,$ids) . ") threw errors:\n" . implode("\n", $scaffolder->getErrors())) . "\nSEE " . Writer::getLogFilePath() . DIRECTORY_SEPARATOR . "scaffolder_errors.log for details\n";
+            }
             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObjectTypes(' . implode(',' ,$ids) . '): Sacfolding for ID: ' . $result->id . ' finished', Writer::OUTPUT_FILE, 'import.log');
         }
     }
