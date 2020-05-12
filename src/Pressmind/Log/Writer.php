@@ -35,9 +35,7 @@ class Writer
         }
         if($output == self::OUTPUT_FILE || $output == self::OUTPUT_BOTH) {
             $date = new DateTime();
-            $config = Registry::getInstance()->get('config');
-            $log_folder_name = isset($config['logging']['log_file_path']) ? $config['logging']['log_file_path'] : 'logs';
-            $log_dir = HelperFunctions::buildPathString([APPLICATION_PATH, $log_folder_name]);
+            $log_dir = self::getLogFilePath();
             if(!is_dir($log_dir)) {
                 mkdir($log_dir, 0777, true);
             }
@@ -47,5 +45,15 @@ class Writer
             }
         }
         return $log_text;
+    }
+
+    /**
+     * @return string
+     */
+    static function getLogFilePath() {
+        $config = Registry::getInstance()->get('config');
+        $log_folder_name = isset($config['logging']['log_file_path']) ? $config['logging']['log_file_path'] : 'logs';
+        $log_dir = HelperFunctions::buildPathString([APPLICATION_PATH, $log_folder_name]);
+        return $log_dir;
     }
 }
