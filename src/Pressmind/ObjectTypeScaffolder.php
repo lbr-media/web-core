@@ -124,6 +124,9 @@ class ObjectTypeScaffolder
         foreach ($this->_log as $log) {
             Writer::write($log, Writer::OUTPUT_FILE, 'scaffolder.log');
         }
+        foreach ($this->_errors as $error) {
+            Writer::write($error, Writer::OUTPUT_FILE, 'scaffolder_error.log');
+        }
     }
 
     /**
@@ -184,8 +187,6 @@ class ObjectTypeScaffolder
             }
             $definitions['properties'][$definitionField[0]] = $property;
         }
-        $this->_log[] = $properties;
-        $this->_log[] = $definitions;
         $this->_class_definitions = $definitions;
         $text = "<?php\n\nnamespace Custom\MediaType;\n\nuse Custom\AbstractMediaType;\nuse Pressmind\ORM\Object\MediaObject\DataType;" . $use . "\n\n/**\n * Class " . $this->_generateClassName($this->_object_definition->name) . "\n" . implode("\n", $properties) . "\n */\nclass " . $this->_generateClassName($this->_object_definition->name) . " extends AbstractMediaType {\nprotected \$_definitions = " . $this->_var_export($definitions, true) . ';}';
         file_put_contents(BASE_PATH . '/src/Custom/MediaType/' . $this->_generateClassName($this->_object_definition->name) . '.php', $text);
@@ -227,6 +228,7 @@ class ObjectTypeScaffolder
             }
         } catch (Exception $e) {
             $this->_log[] = $e->getMessage();
+            $this->_errors[] = $e->getMessage();
         }
         if($exists == false) {
             try {
@@ -234,6 +236,7 @@ class ObjectTypeScaffolder
                 $this->_log[] = $pSql;
             } catch (Exception $e) {
                 $this->_log[] = 'Database error: ' . $e->getMessage();
+                $this->_errors[] = 'Database error: ' . $e->getMessage();
             }
         } else {
             $this->_log[] = 'Database table objectdata_' . HelperFunctions::human_to_machine($this->_tablename) . ' exists';
