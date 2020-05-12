@@ -57,7 +57,7 @@ class Pdo implements AdapterInterface
         $this->prepare($query);
         if (!$this->statement->execute($parameters)) {
             $error = $this->statement->errorInfo();
-            throw new Exception('PDO Database Error: ' . $error[0] . ', ' . $error[1] . ', ' . $error[2] . $this->statement->queryString . print_r($parameters, true));
+            throw new Exception('PDO Database Error: ' . $error[0] . ', ' . $error[1] . ', ' . $error[2] . ' Query: ' .  $this->statement->queryString . print_r($parameters, true));
         }
     }
 
