@@ -40,6 +40,11 @@ class Import
     /**
      * @var array
      */
+    private $_errors = [];
+
+    /**
+     * @var array
+     */
     private $_visibilities = [30];
 
     /**
@@ -259,6 +264,7 @@ class Import
                 $media_object->create();
             } catch (Exception $e) {
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Creating media object failed: ' . $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+                $this->_errors[] = 'Importer::importMediaObject(' . $id_media_object . '):  Creating media object failed: ' . $e->getMessage();
             }
             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Deleting Route entries', Writer::OUTPUT_FILE, 'import.log');
             $db->delete('pmt2core_routes', ['id_media_object = ?', $media_object->getId()]);
@@ -291,6 +297,7 @@ class Import
             return ($import_error == false);
         } else {
             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '): RestClient-Request for Media Object ID: ' . $id_media_object . ' failed', Writer::OUTPUT_FILE, 'import_error.log');
+            $this->_errors[] = 'Importer::importMediaObject(' . $id_media_object . '): RestClient-Request for Media Object ID: ' . $id_media_object . ' failed';
             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . '--------------------------------------------------------------------------------', Writer::OUTPUT_FILE, 'import.log');
         }
         return false;
@@ -321,6 +328,7 @@ class Import
                     $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . $class_name . ' mapping successfull.', Writer::OUTPUT_FILE, 'import.log');
                 } catch (Exception $e) {
                     $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . $class_name . ' mapping failed: ' . $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+                    $this->_errors[] = 'Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . $class_name . ' mapping failed: ' . $e->getMessage();
                 }
                 unset($object);
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): Object removed from heap', Writer::OUTPUT_FILE, 'import.log');
@@ -341,6 +349,7 @@ class Import
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . get_class($touristic_object_to_import) . ' created.', Writer::OUTPUT_FILE, 'import.log');
             } catch (Exception $e) {
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . get_class($touristic_object_to_import) . ' creation failed: ' . $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+                $this->_errors[] = 'Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . get_class($touristic_object_to_import) . ' creation failed: ' . $e->getMessage();
             }
             unset($touristic_object_to_import);
             unset($touristic_data);
@@ -371,6 +380,7 @@ class Import
                             $starting_point_option->create();
                         } catch (Exception $e) {
                             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): Error writing starting point option with ID ' . $starting_point_option->getId() . ': '. $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+                            $this->_errors[] = 'Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): Error writing starting point option with ID ' . $starting_point_option->getId() . ': '. $e->getMessage();
                         }
                         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): Starting point option with ID ' . $starting_point_option->getId() . ' written', Writer::OUTPUT_FILE, 'import.log');
                         unset($starting_point_option);
@@ -406,6 +416,7 @@ class Import
                             $tree->create();
                         } catch (Exception $e) {
                             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): Error importing tree ID ' . $tree->id . ': ' . $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+                            $this->_errors[] = 'Importer::_importCategoryTrees(): Error importing tree ID ' . $tree->id . ': ' . $e->getMessage();
                         }
                         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): Tree import done ', Writer::OUTPUT_FILE, 'import.log');
                         if(isset($result->tree->item)) {
@@ -418,6 +429,7 @@ class Import
             }
         } catch (Exception $e) {
             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): Import Error: ' . $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+            $this->_errors[] = 'Importer::_importCategoryTrees(): Import Error: ' . $e->getMessage();
         }
     }
 
@@ -443,7 +455,8 @@ class Import
                 $category_tree_item->delete();
                 $category_tree_item->create();
             } catch (Exception $e) {
-                $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_iterateCategoryTreeItems(): Error importing tree item ID ' . $item->id . ': '. $e->getMessage() , Writer::OUTPUT_FILE, 'import_error.log');
+                $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_iterateCategoryTreeItems(): Error importing tree item ID ' . $item->id . ': '. $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+                $this->_errors[] = 'Importer::_iterateCategoryTreeItems(): Error importing tree item ID ' . $item->id . ': '. $e->getMessage();
             }
             if (isset($item->item)) {
                 $this->_iterateCategoryTreeItems($id_tree, $item->item, $item->id);
@@ -554,6 +567,16 @@ class Import
     public function getLog()
     {
         return $this->_log;
+    }
+
+    public function hasErrors()
+    {
+        return count($this->_errors) > 0;
+    }
+
+    public function getErrors()
+    {
+        return $this->_errors;
     }
 
     /**
