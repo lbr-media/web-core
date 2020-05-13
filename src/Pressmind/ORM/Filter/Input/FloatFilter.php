@@ -10,6 +10,9 @@ class FloatFilter implements FilterInterface
 
     public function filterValue($pValue)
     {
+        if($pValue == '' || is_null($pValue)) {
+            return null;
+        }
         return floatval($pValue);
     }
 
