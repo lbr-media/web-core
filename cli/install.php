@@ -25,6 +25,8 @@ $models = [
     '\MediaObject\DataType\Picture',
     '\MediaObject\DataType\Picture\Derivative',
     '\MediaObject\DataType\Table',
+    '\MediaObject\DataType\Table\Row',
+    '\MediaObject\DataType\Table\Row\Column',
     '\Route',
     '\Search',
     '\Touristic\Booking\Earlybird',
