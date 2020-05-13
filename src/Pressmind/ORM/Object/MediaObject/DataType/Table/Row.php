@@ -30,7 +30,7 @@ class Row extends AbstractObject
             'id' => [
                 'title' => 'id',
                 'name' => 'id',
-                'type' => 'string',
+                'type' => 'integer',
                 'required' => false,
                 'filters' => null,
                 'validators' => null,
