@@ -225,6 +225,9 @@ class Import
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Deleting media_object_tables', Writer::OUTPUT_FILE, 'import.log');
                 $db->delete('pmt2core_media_object_tables', ['id_media_object = ?', $id_media_object]);
 
+                $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Deleting media_object_key_value', Writer::OUTPUT_FILE, 'import.log');
+                $db->delete('pmt2core_media_object_key_value', ['id_media_object = ?', $id_media_object]);
+
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Deleting media_object_files', Writer::OUTPUT_FILE, 'import.log');
                 $db->delete('pmt2core_media_object_files', ['id_media_object = ?', $id_media_object]);
 
@@ -494,6 +497,11 @@ class Import
                         $value = null;
                         if($datafield->type == 'categorytree' && isset($datafield->value)) {
                             $value = $datafield->value;
+                        } else if($datafield->type == 'key_value') {
+                            $value = [
+                                'columns' => $datafield->columns,
+                                'values' => $datafield->value->$section_id
+                            ];
                         } else if(isset($datafield->value) && isset($datafield->value->$section_id)) {
                             $value = $datafield->value->$section_id;
                         }
