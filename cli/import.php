@@ -68,7 +68,7 @@ switch ($args[1]) {
         $helptext = "usage: import.php [fullimport | mediaobject | objecttypes] [<single id or commaseparated list of ids>]\n";
         $helptext .= "Example usages:\n";
         $helptext .= "php import.php fullimport\n";
-        $helptext .= "php import.php mediaobject 123456 <only single id is allowed>\n";
+        $helptext .= "php import.php mediaobject 123456, 78901234 <single or multiple ids allowed>\n";
         $helptext .= "php import.php objecttypes 123, 456 <singe or multiple ids allowed>\n";
         echo $helptext;
 }
