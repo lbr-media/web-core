@@ -219,6 +219,9 @@ class Import
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Deleting media_object_links', Writer::OUTPUT_FILE, 'import.log');
                 $db->delete('pmt2core_media_object_links', ['id_media_object = ?', $id_media_object]);
 
+                $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Deleting media_object_object_links', Writer::OUTPUT_FILE, 'import.log');
+                $db->delete('pmt2core_media_object_object_links', ['id_media_object = ?', $id_media_object]);
+
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::importMediaObject(' . $id_media_object . '):  Deleting media_object_tables', Writer::OUTPUT_FILE, 'import.log');
                 $db->delete('pmt2core_media_object_tables', ['id_media_object = ?', $id_media_object]);
 
