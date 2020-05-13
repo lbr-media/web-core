@@ -272,16 +272,18 @@ abstract class AbstractObject implements SplSubject
      */
     public function fromImport($pImport) {
         foreach ($pImport as $key => $value) {
-            if($this->_definitions['properties'][$key]['type'] == 'relation') {
-                $class_array = explode('\\', $this->_definitions['properties'][$key]['relation']['class']);
-                $class_name = $class_array[count($class_array) - 1];
-                if ($mapper = Factory::create($class_name)) {
-                    $this->$key = $mapper->map($this->id_media_object, $this->language, $key, $value);
+            if(isset($this->_definitions['properties'][$key])) {
+                if ($this->_definitions['properties'][$key]['type'] == 'relation') {
+                    $class_array = explode('\\', $this->_definitions['properties'][$key]['relation']['class']);
+                    $class_name = $class_array[count($class_array) - 1];
+                    if ($mapper = Factory::create($class_name)) {
+                        $this->$key = $mapper->map($this->id_media_object, $this->language, $key, $value);
+                    } else {
+                        $this->$key = $value;
+                    }
                 } else {
                     $this->$key = $value;
                 }
-            } else {
-                $this->$key = $value;
             }
         }
     }
