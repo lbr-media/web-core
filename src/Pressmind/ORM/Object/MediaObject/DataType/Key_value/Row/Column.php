@@ -38,7 +38,7 @@ class Column extends AbstractObject
                 'title' => 'id',
                 'name' => 'id',
                 'type' => 'integer',
-                'required' => false,
+                'required' => true,
                 'filters' => null,
                 'validators' => null,
             ],
