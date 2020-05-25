@@ -101,14 +101,6 @@ class Insurance extends AbstractObject
                         'name' => 'description_long',
                         'type' => 'string',
                         'required' => false,
-                        'validators' =>
-                            array(
-                                0 =>
-                                    array(
-                                        'name' => 'maxlength',
-                                        'params' => 45,
-                                    ),
-                            ),
                         'filters' => NULL,
                     ),
                 'duration_max_days' =>
