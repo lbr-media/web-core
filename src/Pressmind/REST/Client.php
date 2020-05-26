@@ -70,6 +70,11 @@ class Client
     public function sendRequest($controller, $action, $params = null) {
         Writer::write('CURL initialized', Writer::OUTPUT_FILE, 'restclient.log');
         $ch = curl_init();
+        if(is_array($params)) {
+            $params['cache'] = 0;
+        } else {
+            $params = ['cache' => 0];
+        }
         $get_params = (is_array($params) && count($params) > 0) ? '?' . http_build_query($params) : '';
         curl_setopt($ch, CURLOPT_URL, $this->_api_endpoint . $this->_api_key . '/' . $controller . '/' . $action . $get_params);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
