@@ -11,7 +11,7 @@ class Key_value implements MapperInterface
 {
     public function map($pIdMediaObject,$pLanguage, $pVarName, $pObject)
     {
-        if(!is_null($pObject) && count($pObject['values']) > 0) {
+        if(!is_null($pObject) && is_array($pObject['values']) && count($pObject['values']) > 0) {
             $mapped_object = new stdClass();
             $mapped_object->id = null;
             $mapped_object->id_media_object = $pIdMediaObject;
