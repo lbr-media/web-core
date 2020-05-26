@@ -498,10 +498,12 @@ class Import
                         if($datafield->type == 'categorytree' && isset($datafield->value)) {
                             $value = $datafield->value;
                         } else if($datafield->type == 'key_value') {
-                            $value = [
-                                'columns' => $datafield->columns,
-                                'values' => $datafield->value->$section_id
-                            ];
+                            if(!empty($datafield->value)) {
+                                $value = [
+                                    'columns' => $datafield->columns,
+                                    'values' => $datafield->value->$section_id
+                                ];
+                            }
                         } else if(isset($datafield->value) && isset($datafield->value->$section_id)) {
                             $value = $datafield->value->$section_id;
                         }
