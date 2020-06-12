@@ -38,9 +38,7 @@ foreach ($media_objects as $media_object) {
         'fulltext_values' => $media_object->tags
     ];
     foreach ($media_object->data as $data) {
-        $foo = $data->toStdClass();
         foreach($data->getPropertyDefinitions() as $name => $definition) {
-            //echo $name . ' -> ' . $definition['type'] . "\n";
             if($definition['type'] == 'string') {
                 $fulltext[] = [
                     'var_name' => $name,
@@ -49,22 +47,23 @@ foreach ($media_objects as $media_object) {
                 ];
             }
             if($definition['type'] == 'relation') {
+                $values = [];
                 if($definition['relation']['class'] == '\\Pressmind\\ORM\\Object\\MediaObject\\DataType\\Categorytree') {
-                    $values = [];
                     foreach ($data->$name as $tree) {
                         $values[] = $tree->item->name;
                     }
                 }
-                $fulltext[] = [
-                    'var_name' => $name,
-                    'id_media_object' => $media_object->getId(),
-                    'fulltext_values' => implode(' ', $values)
-                ];
+                if(count($values) > 0) {
+                    $fulltext[] = [
+                        'var_name' => $name,
+                        'id_media_object' => $media_object->getId(),
+                        'fulltext_values' => implode(' ', $values)
+                    ];
+                }
             }
         }
     }
 }
-//print_r($fulltext);
 foreach ($fulltext as $fulltext_data) {
     $db->insert('pmt2core_fulltext_search', $fulltext_data);
 }
