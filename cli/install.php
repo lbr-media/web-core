@@ -13,6 +13,7 @@ $models = [
     '\Airport',
     '\Bank',
     '\ObjectdataTag',
+    '\Geozip',
     '\CategoryTree',
     '\CategoryTree\Item',
     '\CheapestPriceSpeed',
