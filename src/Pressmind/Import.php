@@ -83,6 +83,13 @@ class Import
         'touristic_insurances_price_tables' => '\Insurance\PriceTable',
     ];
 
+    /**@var array**/
+    private $_touristic_object_field_map = [
+        'touristic_booking_packages' => [
+            'id_insurances_groups' => 'id_insurance_group'
+        ]
+    ];
+
     /**
      * @var float
      */
@@ -326,6 +333,15 @@ class Import
             }
             foreach ($touristic_objects as $touristic_object) {
                 $class_name = '\Pressmind\ORM\Object\Touristic' . $this->_touristic_object_map[$touistic_object_name];
+                if(isset($this->_touristic_object_field_map[$touistic_object_name])) {
+                    foreach ($touristic_object as $key => $value) {
+                        if(isset($this->_touristic_object_field_map[$touistic_object_name][$key])) {
+                            $new_key = $this->_touristic_object_field_map[$touistic_object_name][$key];
+                            $touristic_object->$new_key = $value;
+                            unset($touristic_object->$key);
+                        }
+                    }
+                }
                 try {
                     /**@var AbstractObject $object * */
                     $object = new $class_name();
