@@ -8,6 +8,7 @@ use Pressmind\ORM\Object\AbstractObject;
 use Pressmind\ORM\Object\CheapestPriceSpeed;
 use Pressmind\ORM\Object\Touristic\Date;
 use Pressmind\ORM\Object\Touristic\Insurance;
+use Pressmind\ORM\Object\Touristic\Option;
 use Pressmind\ORM\Object\Touristic\Pickupservice;
 use Pressmind\ORM\Object\Touristic\SeasonalPeriod;
 
@@ -22,7 +23,7 @@ use Pressmind\ORM\Object\Touristic\SeasonalPeriod;
  * @property string $text
  * @property string $price_mix
  * @property integer $id_pickupservice
- * @property integer $id_insurances_groups
+ * @property integer $id_insurance_group
  * @property integer $ibe_type
  * @property string $product_type_ibe
  * @property integer $id_origin
@@ -31,6 +32,9 @@ use Pressmind\ORM\Object\Touristic\SeasonalPeriod;
  * @property Date[] $dates
  * @property SeasonalPeriod[] $seasonal_periods
  * @property \Pressmind\ORM\Object\Touristic\Housing\Package[] $housing_packages
+ * @property Option[] $sightseeings
+ * @property Option[] $tickets
+ * @property Option[] $extras
  */
 class Package extends AbstractObject
 {
@@ -165,10 +169,10 @@ class Package extends AbstractObject
                             ),
                         'filters' => NULL,
                     ),
-                'id_insurances_groups' =>
+                'id_insurance_group' =>
                     array(
-                        'title' => 'Id_insurances_group',
-                        'name' => 'id_insurances_groups',
+                        'title' => 'Id_insurance_group',
+                        'name' => 'id_insurance_group',
                         'type' => 'integer',
                         'required' => false,
                         'validators' =>
@@ -248,7 +252,7 @@ class Package extends AbstractObject
                     'type' => 'relation',
                     'relation' => array(
                         'type' => 'hasOne',
-                        'related_id' => 'id_insurance_group',
+                        'related_id' => 'id_insurance_groups',
                         'class' => Insurance\Group::class
                     ),
                     'required' => false,
@@ -298,6 +302,54 @@ class Package extends AbstractObject
                         'type' => 'hasMany',
                         'related_id' => 'id_booking_package',
                         'class' => Package::class
+                    ),
+                    'required' => false,
+                    'validators' => null,
+                    'filters' => null
+                ),
+                'sightseeings' => array(
+                    'title' => 'sightseeings',
+                    'name' => 'sightseeings',
+                    'type' => 'relation',
+                    'relation' => array(
+                        'type' => 'hasMany',
+                        'related_id' => 'id_booking_package',
+                        'class' => '\\Pressmind\\ORM\\Object\\Touristic\\Option',
+                        'filters' => array(
+                            'type' => 'sightseeing'
+                        )
+                    ),
+                    'required' => false,
+                    'validators' => null,
+                    'filters' => null
+                ),
+                'tickets' => array(
+                    'title' => 'tickets',
+                    'name' => 'tickets',
+                    'type' => 'relation',
+                    'relation' => array(
+                        'type' => 'hasMany',
+                        'related_id' => 'id_booking_package',
+                        'class' => '\\Pressmind\\ORM\\Object\\Touristic\\Option',
+                        'filters' => array(
+                            'type' => 'ticket'
+                        )
+                    ),
+                    'required' => false,
+                    'validators' => null,
+                    'filters' => null
+                ),
+                'extras' => array(
+                    'title' => 'extras',
+                    'name' => 'extras',
+                    'type' => 'relation',
+                    'relation' => array(
+                        'type' => 'hasMany',
+                        'related_id' => 'id_booking_package',
+                        'class' => '\\Pressmind\\ORM\\Object\\Touristic\\Option',
+                        'filters' => array(
+                            'type' => 'extra'
+                        )
                     ),
                     'required' => false,
                     'validators' => null,
