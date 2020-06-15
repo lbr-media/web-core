@@ -148,10 +148,7 @@ class Option extends AbstractObject
                                                 0 => 'housing_option',
                                                 1 => 'extra',
                                                 2 => 'sightseeing',
-                                                3 => 'ticket',
-                                                4 => 'stay',
-                                                5 => 'nights_person',
-                                                6 => 'person_stay'
+                                                3 => 'ticket'
                                             ),
                                     ),
                             ),
@@ -418,6 +415,9 @@ class Option extends AbstractObject
                                                 1 => 'nightly',
                                                 2 => 'daily',
                                                 3 => 'weekly',
+                                                4 => 'stay',
+                                                5 => 'nights_person',
+                                                6 => 'person_stay'
                                             ),
                                     ),
                             ),
