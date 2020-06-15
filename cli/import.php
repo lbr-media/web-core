@@ -5,7 +5,9 @@ use Exception;
 use Pressmind\Log\Writer;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
+
 $args = $argv;
+$args[1] = isset($argv[1]) ? $argv[1] : null;
 
 $importer = new Import();
 
