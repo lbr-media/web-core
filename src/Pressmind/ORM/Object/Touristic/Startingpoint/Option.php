@@ -22,12 +22,13 @@ use \DateTime;
  * @property float $lon
  * @property integer $entry
  * @property integer $exit
- * @property  $exit_time
+ * @property DateTime $exit_time
  * @property integer $exit_time_offset
  * @property integer $start_time_offset
  * @property integer $with_end_time
  * @property integer $with_exit_time
  * @property string $ibe_clients
+ * @property boolean $is_pickup_service
  */
 class Option extends AbstractObject
 {
@@ -349,6 +350,14 @@ class Option extends AbstractObject
                             ),
                         'filters' => NULL,
                     ),
+                'is_pickup_service' => [
+                    'title' => 'is_pickup_service',
+                    'name' => 'is_pickup_service',
+                    'type' => 'boolean',
+                    'required' => false,
+                    'validators' => null,
+                    'filters' => null,
+                ]
             ),
     );
 }
