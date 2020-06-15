@@ -99,62 +99,9 @@ class Dispatcher
     public function dispatch()
     {
         $config = Registry::getInstance()->get('config');
-        /** @var AbstractController $controller */
-        $executionStartTime = microtime(true);
         $result = $this->_router->handle($this->_request);
-        $class_name = '\\Application\\' . ucfirst($result['module']) . '\\Controller\\' . ucfirst($result['controller']);
-        $method_name = $result['action'];
-        $controller = new $class_name($result);
-        $controller->init();
-        $content = $controller->$method_name();
-        $layout_content = '';
-        $layout_script = HelperFunctions::buildPathString(
-            [
-                APPLICATION_PATH,
-                ucfirst($result['module']),
-                'View',
-                'Layout'
-            ]
-        );
-        if($this->_layout_enabled == true) {
-            if (isset($config['layout']['external']) && !empty($config['layout']['external']) && !file_exists($layout_script . '.php')) {
-                $external_html = file_get_contents($config['layout']['external']);
-                $layout_content = str_replace(
-                    [
-                        '###PRESSMIND_IBE_CONTENT###',
-                        '###PRESSMIND_IBE_HEADER_CSS###',
-                        '###PRESSMIND_IBE_HEADER_SCRIPTS###',
-                        '###PRESSMIND_IBE_FOOTER_SCRIPTS###'
-                    ],
-                    [
-                        $content,
-                        $controller->renderCssStyleIncludes(),
-                        $controller->renderHeaderScriptIncludes() . $controller->renderHeaderScripts(),
-                        $controller->renderFooterScriptIncludes()
-                    ],
-                    $external_html
-                );
-            } else {
-                $layout = new View();
-                $layout->setViewScript(HelperFunctions::buildPathString([
-                    ucfirst($result['module']),
-                    'View',
-                    'Layout'
-                ]));
-                $layout_content = $layout->render(
-                    [
-                        'content' => $content,
-                        'headerScriptIncludes' => $controller->renderHeaderScriptIncludes(),
-                        'footerScriptIncludes' => $controller->renderFooterScriptIncludes(),
-                        'cssStyleIncludes' => $controller->renderCssStyleIncludes(),
-                        'executionTime' => microtime(true) - $executionStartTime
-                    ]
-                );
-            }
-        } else {
-            $layout_content = $content;
-        }
-        $this->_response->setBody($layout_content);
+        $this->_response->setContentType('application/json');
+        $this->_response->setBody(json_encode($this->getRequest()->getParameters()));
         $this->_response->setCode(200);
         $this->_response->send();
     }
