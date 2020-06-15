@@ -19,7 +19,8 @@
                 "api_password": ""
             },
             "server": {
-                "api_endpoint": "/api"
+                "api_endpoint": "/api",
+                "api_key": ""
             }
         },
         "logging": {
