@@ -242,6 +242,30 @@ class Request
     }
 
     /**
+     * @return bool
+     */
+    public function isPost()
+    {
+        return strtolower($this->getMethod()) == 'post';
+    }
+
+    /**
+     * @return array
+     */
+    public function getPostValues()
+    {
+        return $this->_body;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGet()
+    {
+        return strtolower($this->getMethod()) == 'get';
+    }
+
+    /**
      * @return array
      */
     public function getParameters()
