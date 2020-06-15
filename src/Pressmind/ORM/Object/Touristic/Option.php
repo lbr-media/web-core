@@ -149,6 +149,9 @@ class Option extends AbstractObject
                                                 1 => 'extra',
                                                 2 => 'sightseeing',
                                                 3 => 'ticket',
+                                                4 => 'stay',
+                                                5 => 'nights_person',
+                                                6 => 'person_stay'
                                             ),
                                     ),
                             ),
