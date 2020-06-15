@@ -117,7 +117,7 @@ class ObjectTypeScaffolder
 
         }
         $sql = 'CREATE TABLE IF NOT EXISTS objectdata_' . HelperFunctions::human_to_machine($this->_tablename) . '(' . implode(',', $database_fields) . ', PRIMARY KEY (id), INDEX (language), UNIQUE (id_media_object))';
-        $this->_generateORMFile($definition_fields);
+        $this->generateORMFile($definition_fields);
         $this->_insertDatabaseTable($sql);
         $this->generateObjectInformationFile();
         $this->generateExampleViewFile();
@@ -148,7 +148,7 @@ class ObjectTypeScaffolder
     /**
      * @param array $pDefinitionFields
      */
-    private function _generateORMFile($pDefinitionFields) {
+    public function generateORMFile($pDefinitionFields) {
         $definitions = [
             'class' => [
                 'name' => $this->_generateClassName($this->_object_definition->name)
@@ -218,12 +218,14 @@ class ObjectTypeScaffolder
     {
         /**@var DB\Adapter\AdapterInterface $db*/
         $db = Registry::getInstance()->get('db');
+        $database_tables_property_name = 'Tables_in_' . Registry::getInstance()->get('config')['database']['dbname'];
         $exists = false;
         try {
             $tables = $db->fetchAll('Show Tables');
             foreach ($tables as $table) {
-                if(isset($table->Tables_in_pmt2lib) && $table->Tables_in_pmt2lib == 'objectdata_' . HelperFunctions::human_to_machine($this->_tablename)) {
+                if(isset($table->$database_tables_property_name) && $table->$database_tables_property_name == 'objectdata_' . HelperFunctions::human_to_machine($this->_tablename)) {
                     $exists = true;
+                    $integrityCheck = new ObjectIntegrityCheck($this->_object_definition, 'objectdata_' . HelperFunctions::human_to_machine($this->_tablename));
                 }
             }
         } catch (Exception $e) {
