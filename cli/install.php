@@ -12,6 +12,7 @@ $models = [
     '\Airline',
     '\Airport',
     '\Bank',
+    '\ObjectdataTag',
     '\CategoryTree',
     '\CategoryTree\Item',
     '\CheapestPriceSpeed',

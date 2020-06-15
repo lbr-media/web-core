@@ -491,4 +491,19 @@ class MediaObject extends AbstractObject
         }
         return $this->_all_available_transports;
     }
+
+    /**
+     * @param $tagName
+     * @return mixed|null
+     * @throws Exception
+     */
+    public function getValueByTagName($tagName) {
+        /**@var ObjectdataTag[] $possible_columns**/
+        $possible_columns = ObjectdataTag::listAll(['id_object_type' => $this->id_object_type, 'tag_name' => $tagName]);
+        if(count($possible_columns) > 0) {
+            $column_name = $possible_columns[0]->objectdata_column_name;
+            return($this->data[0]->$column_name);
+        }
+        return null;
+    }
 }

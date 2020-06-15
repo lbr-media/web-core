@@ -5,6 +5,7 @@ namespace Pressmind;
 
 use \Exception;
 use Pressmind\Log\Writer;
+use Pressmind\ORM\Object\ObjectdataTag;
 use stdClass;
 
 class ObjectTypeScaffolder
@@ -119,6 +120,7 @@ class ObjectTypeScaffolder
         $sql = 'CREATE TABLE IF NOT EXISTS objectdata_' . HelperFunctions::human_to_machine($this->_tablename) . '(' . implode(',', $database_fields) . ', PRIMARY KEY (id), INDEX (language), UNIQUE (id_media_object))';
         $this->generateORMFile($definition_fields);
         $this->_insertDatabaseTable($sql);
+        $this->_insertTags();
         $this->generateObjectInformationFile();
         $this->generateExampleViewFile();
         foreach ($this->_log as $log) {
@@ -322,5 +324,37 @@ class ObjectTypeScaffolder
      */
     private function _generateClassName($pName) {
         return ucfirst(HelperFunctions::human_to_machine($pName));
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function _insertTags() {
+        /**@var DB\Adapter\AdapterInterface $db*/
+        $db = Registry::getInstance()->get('db');
+        $this->_log[] = 'Deleting Tags for Object Type ' . HelperFunctions::human_to_machine($this->_tablename);
+        $db->delete('pmt2core_objectdata_tags', ['id_object_type = ?', $this->_object_definition->id]);
+        $this->_log[] = 'Inserting Tags for Object Type ' . HelperFunctions::human_to_machine($this->_tablename);
+        foreach ($this->_object_definition->fields as $field) {
+            if(is_array($field->sections)) {
+                foreach ($field->sections as $section) {
+                    if (is_array($section->tags)) {
+                        foreach ($section->tags as $tag_name) {
+                            try {
+                                $tag = new ObjectdataTag();
+                                $tag->objectdata_column_name = $field->var_name . '_' . HelperFunctions::human_to_machine($section->name);
+                                $tag->tag_name = $tag_name;
+                                $tag->id_object_type = $this->_object_definition->id;
+                                $tag->create();
+                                $this->_log[] = 'Tag ' . $tag_name . ' for property ' . $field->var_name . '_' . HelperFunctions::human_to_machine($section->name) . ' inserted';
+                            } catch (Exception $e) {
+                                $this->_log[] = 'Tag insert error: ' . $e->getMessage();
+                                $this->_errors[] = 'Tag insert  error: ' . $e->getMessage();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
