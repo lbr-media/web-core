@@ -139,7 +139,7 @@ class Transport extends AbstractObject
                         'title' => 'Type',
                         'name' => 'type',
                         'type' => 'string',
-                        'required' => true,
+                        'required' => false,
                         'validators' =>
                             array(
                                 0 =>
