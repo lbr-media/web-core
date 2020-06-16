@@ -15,6 +15,9 @@ if(php_sapi_name() == 'cli') {
     putenv('ENV=DEVELOPMENT');
 }
 
+$args = $argv;
+$args[1] = isset($argv[1]) ? $argv[1] : null;
+
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 Writer::write('Image processor started', WRITER::OUTPUT_FILE, 'image_processor.log');
@@ -39,6 +42,9 @@ Writer::write('Processing ' . count($result) . ' images', WRITER::OUTPUT_FILE, '
 foreach ($result as $image) {
     try {
         $download_url = $image->tmp_url;
+        if($args[1] == 'nocache') {
+            $download_url .= '&cache=0';
+        }
         Writer::write('Downloading image from ' . $download_url, WRITER::OUTPUT_FILE, 'image_processor.log');
         $downloader = new Download();
         $query = [];
