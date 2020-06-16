@@ -5,9 +5,6 @@ use Pressmind\MVC\Request;
 use Pressmind\MVC\Response;
 use Pressmind\REST\Controller\Ibe;
 
-
-error_reporting(1);
-ini_set('display_errors', 1);
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 $request = new Request();
