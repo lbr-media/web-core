@@ -10,7 +10,9 @@ use Pressmind\DB\Adapter\Pdo;
 define('BASE_PATH', __DIR__);
 define('APPLICATION_PATH', __DIR__);
 define('WEBSERVER_DOCUMENT_ROOT', __DIR__);
-define('WEBSERVER_HTTP', !empty($_SERVER['HTTPS']) ? 'http://' : 'https://' . $_SERVER['HTTP_HOST']);
+if (php_sapi_name() != "cli") {
+    define('WEBSERVER_HTTP', !empty($_SERVER['HTTPS']) ? 'http://' : 'https://' . $_SERVER['HTTP_HOST']);
+}
 define('ENV', 'development'); //For example purposes we set the ENV here, for real world applications it's a good idea to set an environment variable in a .htaccess file or in the webservers configuration
 
 /**
