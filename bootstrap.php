@@ -4,14 +4,18 @@ use Autoloader;
 use Pressmind\DB\Adapter\Pdo;
 
 /**
- * The pressmind lib needs three CONSTANTS to work
- * BASE_PATH: This is the path
+ * The pressmind lib needs five CONSTANTS to work
+ * BASE_PATH:
+ * APPLICATION_PATH: This is the path where all application files are stored (it's a good idea to have the base path outside the document_root of your webserver)
+ * WEBSERVER_DOCUMENT_ROOT: the document_root of your webserver (should normally be be BASE_PATH . '/htdocs)
+ * WEBSERVER_HTTP: How the webpage is accessed via http(s) (https://your-domain.com)
+ * ENV: The environment (development, testing, production)
  */
 define('BASE_PATH', __DIR__);
 define('APPLICATION_PATH', __DIR__);
 define('WEBSERVER_DOCUMENT_ROOT', __DIR__);
 if (php_sapi_name() != "cli") {
-    define('WEBSERVER_HTTP', !empty($_SERVER['HTTPS']) ? 'http://' : 'https://' . $_SERVER['HTTP_HOST']);
+    define('WEBSERVER_HTTP', (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST']);
 }
 define('ENV', 'development'); //For example purposes we set the ENV here, for real world applications it's a good idea to set an environment variable in a .htaccess file or in the webservers configuration
 
