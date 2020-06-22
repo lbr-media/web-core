@@ -44,7 +44,8 @@
                 "default": "Default",
                 "fallback": "Default",
                 "fallback_on_empty_values": true
-            }
+            },
+            "preview_url": "/examples/detail.php"
         },
         "languages": {
             "default": "de"
