@@ -3,6 +3,7 @@ namespace Pressmind;
 
 use Exception;
 use Pressmind\Log\Writer;
+use Pressmind\ORM\Object\MediaObject;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
@@ -61,6 +62,39 @@ switch ($args[1]) {
             }
         } else {
             echo "Missing objecttype id(s)";
+        }
+        break;
+    case 'depublish':
+        if(!empty($args[2])) {
+            Writer::write('Depublishing mediaobject ID(s): ' . $args[2], Writer::OUTPUT_BOTH, 'import.log');
+            $ids = array_map('trim', explode(',', $args[2]));
+            foreach ($ids as $id) {
+                try {
+                    $media_object = new MediaObject($id);
+                    $media_object->visibility = 10;
+                    $media_object->update();
+                    Writer::write('Mediaobject ' . $id . ' successfully depublished (visibility set to 10/nobody)', Writer::OUTPUT_BOTH, 'import.log');
+                } catch (Exception $e) {
+                    Writer::write($e->getMessage(), Writer::OUTPUT_BOTH, 'import_error.log');
+                    echo "WARNING: Depublish for id " . $id . "  failed:\n" . $e->getMessage() . "\nSEE " . Writer::getLogFilePath() . DIRECTORY_SEPARATOR . "import_errors.log for details\n";
+                }
+            }
+        }
+        break;
+    case 'destroy':
+        if(!empty($args[2])) {
+            Writer::write('Destroying mediaobject ID(s): ' . $args[2], Writer::OUTPUT_BOTH, 'import.log');
+            $ids = array_map('trim', explode(',', $args[2]));
+            foreach ($ids as $id) {
+                try {
+                    $media_object = new MediaObject($id);
+                    $media_object->delete();
+                    Writer::write('Mediaobject ' . $id . ' successfully destroyed', Writer::OUTPUT_BOTH, 'import.log');
+                } catch (Exception $e) {
+                    Writer::write($e->getMessage(), Writer::OUTPUT_BOTH, 'import_error.log');
+                    echo "WARNING: Destruction for mediaobject " . $id . "  failed:\n" . $e->getMessage() . "\nSEE " . Writer::getLogFilePath() . DIRECTORY_SEPARATOR . "import_errors.log for details\n";
+                }
+            }
         }
         break;
     case 'help':
