@@ -401,4 +401,32 @@ class CheapestPriceSpeed extends AbstractObject
             ]
         ]
     ];
+
+    /**
+     * get the lowest price of all available media objects
+     * @return float|null
+     */
+    public function getLowestPrice()
+    {
+       $min_result = $this->_db->fetchRow("SELECT MIN(price_total) as min_price FROM pmt2core_cheapest_price_speed INNER JOIN pmt2core_media_objects ON pmt2core_cheapest_price_speed.id_media_object = pmt2core_media_objects.id WHERE pmt2core_media_objects.visibility = 30");
+       return !is_null($min_result) ? $min_result->min_price : null;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getHighestPrice()
+    {
+        $max_result = $this->_db->fetchRow("SELECT MAX(price_total) as max_price FROM pmt2core_cheapest_price_speed INNER JOIN pmt2core_media_objects ON pmt2core_cheapest_price_speed.id_media_object = pmt2core_media_objects.id WHERE pmt2core_media_objects.visibility = 30");
+        return !is_null($max_result) ? $max_result->max_price : null;
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public static function getMinMaxPrices() {
+        $object = new self();
+        return array($object->getLowestPrice(), $object->getHighestPrice());
+    }
 }
