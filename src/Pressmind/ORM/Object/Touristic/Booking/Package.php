@@ -252,7 +252,7 @@ class Package extends AbstractObject
                     'type' => 'relation',
                     'relation' => array(
                         'type' => 'hasOne',
-                        'related_id' => 'id_insurance_groups',
+                        'related_id' => 'id_insurance_group',
                         'class' => Insurance\Group::class
                     ),
                     'required' => false,
