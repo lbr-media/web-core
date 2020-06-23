@@ -750,6 +750,16 @@ abstract class AbstractObject implements SplSubject
         return $property_names;
     }
 
+    /**
+     * Check if a property exists in this classes property definitions
+     * @param string $propertyName
+     * @return bool
+     */
+    public function hasProperty($propertyName)
+    {
+        return isset($this->_definitions['properties'][$propertyName]);
+    }
+
     public function getPropertyDefinitions()
     {
         return $this->_definitions['properties'];
