@@ -20,7 +20,11 @@ class Ibe extends AbstractController
         $mediaObject = new MediaObject($this->parameters['params']['imo']);
         $settings = $this->parameters['settings'];
         /**@var MediaObject\DataType\Picture $image**/
-        $image_info = ['uri', 'caption', 'alt'];
+        $image_info = [
+            'uri' => null,
+            'caption' => null,
+            'alt' => null
+        ];
         $image = $mediaObject->getValueByTagName('truetravel.teaser.image')[0];
         if(!is_null($image)) {
             $image_info['uri'] = substr($image->getUri('teaser'), 0, 4) == 'http' ? $image->getUri('teaser') : WEBSERVER_HTTP . $image->getUri('teaser');
