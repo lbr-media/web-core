@@ -139,9 +139,7 @@ class Booking
                 $this->getDate()->arrival,
                 $this->getDate()->departure,
                 1,
-                $this->getBookingPackage()->duration,
-                18,
-                2
+                $this->getBookingPackage()->duration
             )) {
                 if($this->getBookingPackage()->ibe_type == 2 && empty($calculated_insurance->code_ibe)) {
 
@@ -171,6 +169,57 @@ class Booking
         }
 
         return $insurances;
+    }
+
+    /**
+     * @param null $pId
+     * @return \Pressmind\ORM\Object\Touristic\Housing\Package
+     * @throws Exception
+     */
+    public function getHousingPackage($pId = null) {
+        if(is_null($pId) && !is_null($this->id_housing_package)) {
+            $pId = $this->id_housing_package;
+        }
+        /**@var \Pressmind\ORM\Object\Touristic\Housing\Package $housingPackage**/
+        $housingPackage = $this->booking_package->findObjectInArray('housing_packages', 'id', $pId);
+        //print_r($this->booking_package->toStdClass());
+        return $housingPackage;
+    }
+
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function getAllHousingOptions() {
+        if(!is_null($this->id_housing_package)) {
+            return $this->getHousingPackage()->options;
+        }
+        return null;
+    }
+
+    /**
+     * Gets housingoptions from GET parameters ido=123456 or iho[123456]=x
+     * if iho is set housingoptions are multiplied by amount (iho[123456]=2 will add 2 options for 123456)
+     * @return Option[]
+     * @throws Exception
+     */
+    public function getHousingOptions() {
+        $housing_options = array();
+        if(!is_null($this->id_option)) {
+            $housing_option_ids = array($this->id_option => 1);
+        } else if (!is_null($this->ids_housing_options)) {
+            $housing_option_ids = $this->ids_housing_options;
+        } else {
+            return $this->getAllHousingOptions();
+        }
+        foreach($housing_option_ids as $id_housing_option => $amount) {
+            for($i=0;$i<$amount;$i++) {
+                $housingOption = $this->getHousingPackage()->findObjectInArray('options', 'id', $id_housing_option);
+                $housing_options[] = $housingOption;
+            }
+        }
+
+        return $housing_options;
     }
 
     /**
