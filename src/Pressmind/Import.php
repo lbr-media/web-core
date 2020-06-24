@@ -366,11 +366,12 @@ class Import
             }
             try {
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): deleting old data ' . get_class($touristic_object_to_import), Writer::OUTPUT_FILE, 'import.log');
-                if($touristic_object_to_import->hasProperty('id_media_object')) {
+                /*if($touristic_object_to_import->hasProperty('id_media_object')) {
                     $db->delete($touristic_object_to_import->getDbTableName(), ['id_media_object = ?', $id_media_object]);
                 } else {
                     $touristic_object_to_import->delete();
-                }
+                }*/
+                $touristic_object_to_import->delete();
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): writing new data ' . get_class($touristic_object_to_import), Writer::OUTPUT_FILE, 'import.log');
                 $touristic_object_to_import->create();
                 $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . get_class($touristic_object_to_import) . ' created.', Writer::OUTPUT_FILE, 'import.log');
