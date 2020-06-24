@@ -33,7 +33,7 @@ if($request->isGet()) {
             $media_object = new ORM\Object\MediaObject($request->getParameter('id_media_object'));
             if($request->getParameter('preview') == "1") {
                 $config = Registry::getInstance()->get('config');
-                $preview_url = WEBSERVER_HTTP . $config['data']['preview_url'] . '?id_media_object=' . $media_object->getId() . '&preview=1';
+                $preview_url = WEBSERVER_HTTP . str_replace(['{{id_media_object}}', '{{preview}}'], [$media_object->getId(), '1'], $config['data']['preview_url']);
                 $response->setContentType('text/html');
                 $response->setBody('You will be redirected to Preview Page: ' . $preview_url);
                 $response->addHeader('Location', $preview_url);
