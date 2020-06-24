@@ -30,8 +30,9 @@ if($request->isGet()) {
         try {
             $importer = new Import();
             $importer->importMediaObject($request->getParameter('id_media_object'));
-            $media_object = new ORM\Object\MediaObject($request->getParameter('id_media_object'));
+            $importer->postImport();
             if($request->getParameter('preview') == "1") {
+                $media_object = new ORM\Object\MediaObject($request->getParameter('id_media_object'));
                 $config = Registry::getInstance()->get('config');
                 $preview_url = WEBSERVER_HTTP . str_replace(['{{id_media_object}}', '{{preview}}'], [$media_object->getId(), '1'], $config['data']['preview_url']);
                 $response->setContentType('text/html');
