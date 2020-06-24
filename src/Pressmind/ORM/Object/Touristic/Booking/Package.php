@@ -301,7 +301,7 @@ class Package extends AbstractObject
                     'relation' => array(
                         'type' => 'hasMany',
                         'related_id' => 'id_booking_package',
-                        'class' => Package::class
+                        'class' => '\\Pressmind\\ORM\\Object\\Touristic\\Housing\\Package'
                     ),
                     'required' => false,
                     'validators' => null,
