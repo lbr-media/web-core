@@ -199,13 +199,13 @@ class Import
         $this->_start_time = microtime(true);
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . '--------------------------------------------------------------------------------', Writer::OUTPUT_FILE, 'import.log');
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . ')', Writer::OUTPUT_FILE, 'import.log');
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . '): REST Request started', Writer::OUTPUT_FILE, 'import.log');
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . '): REST Request started', Writer::OUTPUT_BOTH, 'import.log');
         try {
             $response = $this->_client->sendRequest('Text', 'getById', ['ids' => $id_media_object, 'withTouristicData' => 1, 'withDynamicData' => 1]);
         } catch (Exception $e) {
             $response = null;
         }
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . '): REST Request done', Writer::OUTPUT_FILE, 'import.log');
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObject(' . $id_media_object . '): REST Request done', Writer::OUTPUT_BOTH, 'import.log');
         $import_error = false;
         if (is_array($response) && count($response) > 0) {
             $this->_start_time = microtime(true);
@@ -317,6 +317,25 @@ class Import
     }
 
     /**
+     * @param string $touristic_object_name
+     * @param integer $id_media_object
+     * @throws Exception
+     */
+    private function _delete_old_touristic_data($touristic_object_name, $id_media_object)
+    {
+        /** @var Pdo $db**/
+        $db = Registry::getInstance()->get('db');
+        $class_name = '\Pressmind\ORM\Object\Touristic' . $this->_touristic_object_map[$touristic_object_name];
+        /**@var AbstractObject $touristic_object * */
+        $touristic_object = new $class_name();
+        if($touristic_object->hasProperty('id_media_object')) {
+            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_delete_old_touristic_data(' . $touristic_object_name . ', ' . $id_media_object . '): deleting ' . $touristic_object_name . ' data for media_object: ' . $id_media_object, Writer::OUTPUT_FILE, 'import.log');
+            $db->delete($touristic_object->getDbTableName(), ['id_media_object = ?', $id_media_object]);
+        }
+        unset($touristic_object);
+    }
+
+    /**
      * @param array $touristic_data
      * @param integer $id_media_object
      * @return array
@@ -324,20 +343,20 @@ class Import
      */
     private function _importMediaObjectTouristicData($touristic_data, $id_media_object)
     {
-        $db = Registry::getInstance()->get('db');
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): parsing touristic data', Writer::OUTPUT_FILE, 'import.log');
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): parsing touristic data', Writer::OUTPUT_BOTH, 'import.log');
         $this->_current_touristic_data_to_import = [];
-        foreach ($touristic_data as $touistic_object_name => $touristic_objects) {
-            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): Mapping ' . $touistic_object_name, Writer::OUTPUT_FILE, 'import.log');
+        foreach ($touristic_data as $touristic_object_name => $touristic_objects) {
+            $this->_delete_old_touristic_data($touristic_object_name, $id_media_object);
+            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): Mapping ' . $touristic_object_name, Writer::OUTPUT_FILE, 'import.log');
             if (count($touristic_objects) == 0) {
-                $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . $touistic_object_name . ' does not contain any data, skipping.', Writer::OUTPUT_FILE, 'import.log');
+                $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicData(' . $id_media_object . '): ' . $touristic_object_name . ' does not contain any data, skipping.', Writer::OUTPUT_FILE, 'import.log');
             }
             foreach ($touristic_objects as $touristic_object) {
-                $class_name = '\Pressmind\ORM\Object\Touristic' . $this->_touristic_object_map[$touistic_object_name];
-                if(isset($this->_touristic_object_field_map[$touistic_object_name])) {
+                $class_name = '\Pressmind\ORM\Object\Touristic' . $this->_touristic_object_map[$touristic_object_name];
+                if(isset($this->_touristic_object_field_map[$touristic_object_name])) {
                     foreach ($touristic_object as $key => $value) {
-                        if(isset($this->_touristic_object_field_map[$touistic_object_name][$key])) {
-                            $new_key = $this->_touristic_object_field_map[$touistic_object_name][$key];
+                        if(isset($this->_touristic_object_field_map[$touristic_object_name][$key])) {
+                            $new_key = $this->_touristic_object_field_map[$touristic_object_name][$key];
                             $touristic_object->$new_key = $value;
                             unset($touristic_object->$key);
                         }
@@ -392,9 +411,9 @@ class Import
      */
     private function _importMediaObjectTouristicStartingPointOptions($startingpointIds) {
         $this->_start_time = microtime(true);
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): REST request started', Writer::OUTPUT_FILE, 'import.log');
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): REST request started', Writer::OUTPUT_BOTH, 'import.log');
         $response = $this->_client->sendRequest('StartingPoint', 'getById', ['ids' => implode(',', $startingpointIds)]);
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): REST request done', Writer::OUTPUT_FILE, 'import.log');
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): REST request done', Writer::OUTPUT_BOTH, 'import.log');
         if (is_a($response, 'stdClass') && isset($response->result) && is_array($response->result)) {
             foreach ($response->result as $result) {
                 if(is_a($result, 'stdClass') && isset($result->options) && is_array($result->options)) {
@@ -418,7 +437,7 @@ class Import
             }
         }
         unset($response);
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): Import finished', Writer::OUTPUT_FILE, 'import.log');
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectTouristicStartingPointOptions(' . implode(',', $startingpointIds) . '): Import finished', Writer::OUTPUT_BOTH, 'import.log');
     }
 
     /**
@@ -428,9 +447,9 @@ class Import
     private function _importCategoryTrees($ids)
     {
         try {
-            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): REST request started', Writer::OUTPUT_FILE, 'import.log');
+            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): REST request started', Writer::OUTPUT_BOTH, 'import.log');
             $response = $this->_client->sendRequest('Category', 'getById', ['ids' => implode(',', $ids)]);
-            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): REST request done', Writer::OUTPUT_FILE, 'import.log');
+            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): REST request done', Writer::OUTPUT_BOTH, 'import.log');
             $this->_checkApiResponse($response);
             if (is_a($response, 'stdClass') && isset($response->result) && is_array($response->result)) {
                 foreach ($response->result as $result) {
@@ -455,6 +474,7 @@ class Import
                     }
                 }
             }
+            $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): Import finished', Writer::OUTPUT_BOTH, 'import.log');
         } catch (Exception $e) {
             $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importCategoryTrees(): Import Error: ' . $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
             $this->_errors[] = 'Importer::_importCategoryTrees(): Import Error: ' . $e->getMessage();
@@ -503,7 +523,7 @@ class Import
         $category_tree_ids = [];
         $conf =  Registry::getInstance()->get('config');
         $default_language = $conf['languages']['default'];
-        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectData(' . $id_media_object . '): Importing media object data', Writer::OUTPUT_FILE, 'import.log');
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::_importMediaObjectData(' . $id_media_object . '): Importing media object data', Writer::OUTPUT_BOTH, 'import.log');
         $this->_current_media_object_data_to_import = [];
         $values = [];
         $ignore = [];
