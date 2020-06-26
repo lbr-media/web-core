@@ -64,7 +64,10 @@ if($args[1] != 'only_static') {
             $model_name = $namespace . $model;
             Writer::write('Creating database table for model: ' . $model_name, Writer::OUTPUT_BOTH, 'install.log');
             $scaffolder = new DB\Scaffolder\Mysql(new $model_name());
-            $scaffolder->run();
+            $scaffolder->run($args[1] === 'drop_tables');
+            foreach ($scaffolder->getLog() as $scaffolder_log) {
+                Writer::write($scaffolder_log, Writer::OUTPUT_FILE, 'install.log');
+            }
         } catch (Exception $e) {
             Writer::write($model_name, Writer::OUTPUT_BOTH, 'install_errors.log');
             Writer::write($e->getMessage(), Writer::OUTPUT_BOTH, 'install_errors.log');

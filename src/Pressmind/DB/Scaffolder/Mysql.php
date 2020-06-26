@@ -23,6 +23,11 @@ class Mysql
     private $_orm_object;
 
     /**
+     * @var array
+     */
+    private $_log = [];
+
+    /**
      * Mysql constructor.
      * @param AbstractObject $ormObject
      */
@@ -31,14 +36,25 @@ class Mysql
         $this->_orm_object = $ormObject;
     }
 
+    public function getLog()
+    {
+        return $this->_log;
+    }
+
     /**
      * @throws Exception
      */
-    public function run() {
-        $sql = $this->_parseTableInfoToSQL($this->_orm_object->getPropertyDefinitions());
+    public function run($dropTablesIfExist = false) {
         /**@var AdapterInterface $db**/
         $db = Registry::getInstance()->get('db');
+        if(true === $dropTablesIfExist) {
+            $drop_sql = "DROP TABLE IF EXISTS " . $this->_orm_object->getDbTableName();
+            $db->execute($drop_sql);
+            $this->_log[] = 'Table ' . $this->_orm_object->getDbTableName() . ' dropped';
+        }
+        $sql = $this->_parseTableInfoToSQL($this->_orm_object->getPropertyDefinitions());
         $db->execute($sql);
+        $this->_log[] = 'Table ' . $this->_orm_object->getDbTableName() . ' created';
     }
 
     /**
