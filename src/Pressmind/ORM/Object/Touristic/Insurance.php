@@ -260,8 +260,8 @@ class Insurance extends AbstractObject
                 $now = new DateTime();
                 foreach ($this->price_tables as $pricetable) {
                     if (
-                        ($pricetable->age_from <= $personAge || $pricetable->age_from == 0)
-                        && ($pricetable->age_to >= $personAge || $pricetable->age_to == 0)
+                        ($pricetable->age_from <= $personAge || $pricetable->age_from == 0 || $personAge == null)
+                        && ($pricetable->age_to >= $personAge || $pricetable->age_to == 0 || $personAge == null)
                         && ($pricetable->travel_date_from <= $dateStart || is_null($pricetable->travel_date_from))
                         && ($pricetable->travel_date_to >= $dateEnd || is_null($pricetable->travel_date_to))
                         && ($pricetable->travel_duration_from <= $duration || $pricetable->travel_duration_from == 0)
@@ -270,8 +270,8 @@ class Insurance extends AbstractObject
                         && ($pricetable->travel_price_max >= $travelPrice || $pricetable->travel_price_max == 0)
                         && ($pricetable->booking_date_from <= $now || is_null($pricetable->booking_date_from))
                         && ($pricetable->booking_date_to >= $now || is_null($pricetable->booking_date_to))
-                        && ($pricetable->pax_min <= $total_number_of_persons || $pricetable->pax_min == 0)
-                        && ($pricetable->pax_max >= $total_number_of_persons || $pricetable->pax_max == 0)
+                        && ($pricetable->pax_min <= $total_number_of_persons || $pricetable->pax_min == 0 || $total_number_of_persons == null)
+                        && ($pricetable->pax_max >= $total_number_of_persons || $pricetable->pax_max == 0 || $total_number_of_persons == null)
                     ) {
                         $matches[] = array($pricetable->price_per_person, $pricetable->price_type, $pricetable);
                     }

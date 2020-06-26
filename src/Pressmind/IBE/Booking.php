@@ -139,7 +139,9 @@ class Booking
                 $this->getDate()->arrival,
                 $this->getDate()->departure,
                 1,
-                $this->getBookingPackage()->duration
+                $this->getBookingPackage()->duration,
+                null,
+                null
             )) {
                 if($this->getBookingPackage()->ibe_type == 2 && empty($calculated_insurance->code_ibe)) {
 
