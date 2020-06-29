@@ -216,22 +216,28 @@ abstract class AbstractObject implements SplSubject
     }
 
     /**
+     * @param boolean $deleteRelations
      * @throws Exception
      */
-    public function delete()
+    public function delete($deleteRelations = false)
     {
         $this->_db->delete($this->getDbTableName(), [$this->getDbPrimaryKey() . " = ?", $this->getId()]);
-        $this->_deleteHasManyRelations();
-        $this->_deleteHasOneRelations();
-        $this->_deleteManyToManyRelations();
+        if(true === $deleteRelations) {
+            $this->_deleteHasManyRelations($deleteRelations);
+            $this->_deleteHasOneRelations();
+            $this->_deleteManyToManyRelations();
+        }
     }
 
-    private function _deleteHasManyRelations()
+    /**
+     * @param bool $deleteRelations
+     */
+    private function _deleteHasManyRelations($deleteRelations = false)
     {
         foreach ($this->_definitions['properties'] as $property_name => $property) {
             if($property['type'] == 'relation' && $property['relation']['type'] == 'hasMany') {
                 foreach ($this->$property_name as $relation) {
-                    //$relation->delete();
+                    $relation->delete($deleteRelations);
                 }
             }
         }
