@@ -44,11 +44,13 @@ class Import
 
     /**
      * @var array
+     * @deprecated
      */
-    private $_visibilities = [30];
+    private $_visibilities = [30, 10];
 
     /**
      * @var array
+     * @deprecated
      */
     private $_states = [50];
 
@@ -101,6 +103,11 @@ class Import
     private $_overall_start_time;
 
     /**
+     * @var array
+     */
+    private $_imported_ids = [];
+
+    /**
      * Importer constructor.
      * @throws Exception
      */
@@ -122,7 +129,7 @@ class Import
         $allowed_object_types = array_keys($conf['data']['media_types']);
         $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::import()', Writer::OUTPUT_FILE, 'import.log');
         $params = [
-            'visibility' => implode(',', $this->_visibilities),
+            //'visibility' => implode(',', $this->_visibilities),
             //'state' => implode(',', $this->_states),
             'id_media_object_type' => implode(',', $allowed_object_types)
         ];
@@ -131,6 +138,7 @@ class Import
         }
         $this->_importIds(0, $params);
         $this->_importMediaObjectsFromFolder();
+        $this->removeOrphans();
     }
 
     /**
@@ -171,9 +179,60 @@ class Import
                 $id_media_object = $file_info->getFilename();
                 if ($this->importMediaObject($id_media_object)) {
                     unlink($file_info->getPathname());
+                    $this->_imported_ids[] = $id_media_object;
                 }
             }
         }
+
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . 'Fullimport finished', Writer::OUTPUT_BOTH, 'import.log');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function removeOrphans()
+    {
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Finding and removing Orphans', Writer::OUTPUT_BOTH, 'import.log');
+        $conf = Registry::getInstance()->get('config');
+        $allowed_object_types = array_keys($conf['data']['media_types']);
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Importer::removeOrphans()', Writer::OUTPUT_FILE, 'import.log');
+        $params = [
+            'id_media_object_type' => implode(',', $allowed_object_types)
+        ];
+        $this->_importIds(0, $params);
+        $dir = new DirectoryIterator(APPLICATION_PATH . DIRECTORY_SEPARATOR . $this->_tmp_import_folder);
+        foreach ($dir as $file_info) {
+            if (!$file_info->isDot()) {
+                $id_media_object = $file_info->getFilename();
+                unlink($file_info->getPathname());
+                $this->_imported_ids[] = $id_media_object;
+            }
+        }
+        $this->_findAndRemoveOrphans();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function _findAndRemoveOrphans()
+    {
+        /** @var Pdo $db */
+        $db = Registry::getInstance()->get('db');
+        $existing_media_objects = $db->fetchAll("SELECT id FROM pmt2core_media_objects");
+        foreach($existing_media_objects as $media_object) {
+            if(!in_array($media_object->id, $this->_imported_ids)) {
+                $media_object_to_remove = new MediaObject($media_object->id);
+                $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Found Orphan: ' . $media_object->id . ' -> deleting ...', Writer::OUTPUT_BOTH, 'import.log');
+                try {
+                    $media_object_to_remove->delete(true);
+                    $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Orphan: ' . $media_object->id . ' deleted', Writer::OUTPUT_BOTH, 'import.log');
+                } catch (Exception $e) {
+                    $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Deletion of Orphan ' . $media_object->id . ' failed: ' . $e->getMessage(), Writer::OUTPUT_FILE, 'import_error.log');
+                    $this->_errors[] = 'Deletion of Orphan ' . $media_object->id . '): failed: ' . $e->getMessage();
+                }
+            }
+        }
+        $this->_log[] = Writer::write($this->_getElapsedTimeAndHeap() . ' Finding and removing Orphans done', Writer::OUTPUT_BOTH, 'import.log');
     }
 
     /**
