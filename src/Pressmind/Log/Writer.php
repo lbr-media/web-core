@@ -29,8 +29,6 @@ class Writer
             $log_text = print_r($log, true);
             if(php_sapi_name() == "cli") {
                 echo $log_text . "\n";
-            } else {
-                echo '<pre>' . $log_text . '</pre>';
             }
         }
         if($output == self::OUTPUT_FILE || $output == self::OUTPUT_BOTH) {
