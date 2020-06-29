@@ -57,8 +57,6 @@ class Search
      */
     private $_total_result_count;
 
-    public $foo;
-
     /**
      * Search constructor.
      * @param array $pConditions
@@ -132,6 +130,7 @@ class Search
     {
         /**@var Pdo $db*/
         $db = Registry::getInstance()->get('db');
+        $total_count = 0;
         if(!is_null($this->_paginator)) {
             $this->_concatSql(true);
             $total_count_result = $db->fetchRow($this->_sql, $this->_values);
@@ -158,6 +157,7 @@ class Search
     }
 
     /**
+     * @param boolean $loadFull
      * @return ORM\Object\MediaObject[]
      * @throws Exception
      */
@@ -243,7 +243,11 @@ class Search
             $sql_start = "SELECT COUNT(DISTINCT pmt2core_media_objects.id) as total_rows";
             $sql_end = "";
         }
-        $this->_sql = $sql_start . $additional_fields_string . " FROM pmt2core_media_objects " . implode(' ', $joins) . " WHERE (" . implode(') AND (', $sql). ")" . $sql_end;
+        $visibility = ' pmt2core_media_objects.visibility = 30 AND ';
+        if($this->hasCondition('Pressmind\Search\Condition\Visibility')) {
+            $visibility = null;
+        }
+        $this->_sql = $sql_start . $additional_fields_string . " FROM pmt2core_media_objects " . implode(' ', $joins) . " WHERE" . $visibility . " (" . implode(') AND (', $sql). ")" . $sql_end;
         if(!empty($this->_sort_properties)  && $returnTotalCount == false) {
             $order_strings = [];
             foreach ($this->_sort_properties as $property => $direction) {
@@ -265,9 +269,25 @@ class Search
         if(!empty($this->_limits) && $returnTotalCount == false) {
             $this->_sql .= " LIMIT " . $this->_limits['start'] . ', ' . $this->_limits['length'];
         }
-        //echo $this->_sql;
     }
 
+    /**
+     * @param $pClassName
+     * @return bool
+     */
+    public function hasCondition($pClassName)
+    {
+        foreach ($this->_conditions as $condition) {
+            if(is_a($condition, $pClassName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return false|string
+     */
     public function getConditionsAsJSON() {
         $data = [
             'limit' => $this->_limits,
