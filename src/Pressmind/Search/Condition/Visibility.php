@@ -33,6 +33,9 @@ class Visibility implements ConditionInterface
         $this->_visibilities = $pVisibilities;
     }
 
+    /**
+     * @return string
+     */
     public function getSQL()
     {
         $visibility_strings = [];
@@ -46,32 +49,51 @@ class Visibility implements ConditionInterface
         return $sql;
     }
 
+    /**
+     * @return int
+     */
     public function getSort()
     {
         return $this->_sort;
     }
 
+    /**
+     * @return array
+     */
     public function getValues()
     {
         return $this->_values;
     }
 
+    /**
+     * @param $pVisibilities
+     * @return Visibility
+     */
     public static function create($pVisibilities)
     {
         $object = new self($pVisibilities);
         return $object;
     }
 
+    /**
+     * @return string|null
+     */
     public function getJoins()
     {
         return null;
     }
 
+    /**
+     * @return string|null
+     */
     public function getAdditionalFields()
     {
         return null;
     }
 
+    /**
+     * @param \stdClass $config
+     */
     public function setConfig($config)
     {
         $this->_visibilities = $config->_visibilities;
