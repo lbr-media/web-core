@@ -97,6 +97,15 @@ switch ($args[1]) {
             }
         }
         break;
+    case 'remove_orphans':
+        Writer::write('Removing orphans from database', Writer::OUTPUT_BOTH, 'import.log');
+        try {
+            $importer->removeOrphans();
+        } catch(Exception $e) {
+            Writer::write($e->getMessage(), Writer::OUTPUT_BOTH, 'import_error.log');
+            echo "WARNING: Import threw errors:\n" . $e->getMessage() . "\nSEE " . Writer::getLogFilePath() . DIRECTORY_SEPARATOR . "import_errors.log for details\n";
+        }
+        break;
     case 'help':
     case '--help':
     case '-h':
